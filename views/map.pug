@@ -4,8 +4,13 @@ block body
 	h1 WebMap
 	p A simple webapp for saving and sharing the locations of your favourite places. 
 
+	#leftbox
+
+	#rightbox
+
 	#map
 
 
 block append scripts
 	script(src="scripts/map.js")
+	script(src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDakO19FB47AHux8bCnn4kCQkj2wU8o9cE&callback=initMap")
