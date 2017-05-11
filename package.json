@@ -2,7 +2,7 @@
   "name": "web-map",
   "version": "0.0.1",
   "description": "WebMap",
-  "main": "server/server.js",
+  "main": "server.js",
   "author": {
     "name": "Rik",
     "email": "rikmuld@gmail.com"
