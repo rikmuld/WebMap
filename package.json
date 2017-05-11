@@ -1,0 +1,9 @@
+{
+  "name": "web-map",
+  "version": "0.0.0",
+  "description": "WebMap",
+  "main": "server.js",
+  "author": {
+    "name": "Rik"
+  }
+}
