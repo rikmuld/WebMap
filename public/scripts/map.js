@@ -1,4 +1,5 @@
 
+
 function initMap(){
   const map = new GMaps({
     el: '#map',
@@ -9,7 +10,7 @@ function initMap(){
         style : 'SMALL',
         position: 'TOP_LEFT'
     },
-    panControl : true,
+    panControl : false,
     streetViewControl : false,
     mapTypeControl: false,
     overviewMapControl: false
