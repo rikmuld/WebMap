@@ -8,6 +8,31 @@ html, body
     top 0
     z-index -1
 
+#myLocation
+    background-color: white
+    width 28px
+    height 28px
+    margin-left: 10px
+    cursor: pointer
+    border-radius: 2px
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 4px -1px
+
+    img
+        width 22px
+        height 22px
+        margin 3px 0px 0px 3px
+        object-fit cover
+        object-position 0 0
+
+#myLocation:hover
+    img
+        object-position 88.7% 0
+
+#myLocation.error
+    cursor default
+    img
+        object-position 11.04% 0
+
 #leftbox
     float left
     height 600px
@@ -18,7 +43,6 @@ html, body
 
 div
     box-sizing border-box
-
 
 #rightbox
     float right
@@ -32,4 +56,3 @@ div
 @media (max-width: 600px)
     .wrapper
         display none
-    
