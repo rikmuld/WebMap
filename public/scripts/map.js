@@ -1,3 +1,4 @@
+//todo next: for small devices check length of screen and if less than search bar width plus 100px or so, than adapt search bar to go to the end - 10px
 const MAP = "map";
 const SEARCH_BOX = "searchbar";
 const LOCATION_BOX = "myLocation";

@@ -21,8 +21,7 @@ app.use(stylus.middleware(publicDir))
 app.use(express.static(publicDir))
 
 app.get("*", (req, res) => {
-    if(!req.secure) res.redirect('https://maps.rikmuld.xyz' + req.url)
-    else res.render("map")
+    res.render("map")
 })
 
 server.listen(3000)
