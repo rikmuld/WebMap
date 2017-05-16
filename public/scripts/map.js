@@ -1,4 +1,6 @@
 const MAP = "map";
+const SEARCH_BOX = "searchbar";
+const LOCATION_BOX = "myLocation";
 const STYLE = [
     {
         "featureType": "road.highway",
@@ -37,42 +39,43 @@ function initMap() {
         zoom: 16,
         zoomControl: true,
         zoomControlOptions: {
-            position: google.maps.ControlPosition.LEFT_TOP
+            position: google.maps.ControlPosition.TOP_LEFT
         },
         styles: STYLE,
         panControl: false,
         streetViewControl: true,
         streetViewControlOptions: {
-            position: google.maps.ControlPosition.LEFT_TOP
+            position: google.maps.ControlPosition.TOP_LEFT
         },
         mapTypeControl: false,
         overviewMapControl: false
     });
-    const locationControl = new LocationControl(webMap, google.maps.ControlPosition.LEFT_TOP);
+    const locationControl = new LocationControl(webMap, google.maps.ControlPosition.LEFT_TOP, LOCATION_BOX);
     locationControl.act();
+    const serachbar = new SearchBar(webMap, google.maps.ControlPosition.TOP_LEFT, SEARCH_BOX);
 }
 function toLatlon(pos) {
     return new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
 }
 class SimpleControl {
-    constructor(map, position) {
+    constructor(map, position, id) {
         const instance = this;
+        this.map = map;
         this.div = document.createElement('div');
         this.div.addEventListener("click", function (event) {
             instance.click(this, event);
         });
+        this.div.id = id;
         webMap.controls[position].push(this.div);
     }
+    click(div, ev) { }
 }
 class LocationControl extends SimpleControl {
-    constructor(map, position) {
-        super(map, position);
-        const controlUI = document.createElement('div');
-        controlUI.setAttribute("id", "myLocation");
-        this.div.appendChild(controlUI);
+    constructor(map, position, id) {
+        super(map, position, id);
         const img = document.createElement('img');
         img.src = "http://maps.gstatic.com/tactile/mylocation/mylocation-sprite-2x.png";
-        controlUI.appendChild(img);
+        this.div.appendChild(img);
     }
     act() {
         if (navigator.geolocation) {
@@ -91,5 +94,52 @@ class LocationControl extends SimpleControl {
             this.div.firstElementChild.classList.add("error");
         else
             this.div.firstElementChild.classList.remove("error");
+    }
+}
+class SearchBar extends SimpleControl {
+    constructor(map, position, id) {
+        super(map, position, id);
+        this.markers = [];
+        const input = document.createElement('input');
+        input.placeholder = "Search for places, markers, users, tags...";
+        this.div.appendChild(input);
+        this.search = new google.maps.places.SearchBox(input);
+        const instance = this;
+        map.addListener('bounds_changed', () => instance.search.setBounds(map.getBounds()));
+        this.search.addListener('places_changed', () => instance.searchChanged());
+    }
+    searchChanged() {
+        const instance = this;
+        const places = this.search.getPlaces();
+        if (places.length == 0) {
+            return;
+        }
+        this.markers.forEach(marker => marker.setMap(null));
+        this.markers = [];
+        const bounds = new google.maps.LatLngBounds();
+        places.forEach(place => {
+            if (!place.geometry) {
+                console.log("Returned place contains no geometry");
+                return;
+            }
+            var icon = {
+                url: place.icon,
+                size: new google.maps.Size(71, 71),
+                origin: new google.maps.Point(0, 0),
+                anchor: new google.maps.Point(17, 34),
+                scaledSize: new google.maps.Size(25, 25)
+            };
+            this.markers.push(new google.maps.Marker({
+                map: this.map,
+                icon: icon,
+                title: place.name,
+                position: place.geometry.location
+            }));
+            if (place.geometry.viewport)
+                bounds.union(place.geometry.viewport);
+            else
+                bounds.extend(place.geometry.location);
+        });
+        this.map.fitBounds(bounds);
     }
 }

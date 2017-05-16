@@ -9,14 +9,18 @@ body {
   top: 0;
   z-index: -1;
 }
-#myLocation {
+.mapElement,
+#myLocation,
+#searchbar {
   background-color: #fff;
+  border-radius: 2px;
+  box-shadow: rgba(0,0,0,0.3) 0px 1px 4px -1px;
+}
+#myLocation {
   width: 28px;
   height: 28px;
   margin-left: 10px;
   cursor: pointer;
-  border-radius: 2px;
-  box-shadow: rgba(0,0,0,0.3) 0px 1px 4px -1px;
 }
 #myLocation img {
   width: 22px;
@@ -34,6 +38,27 @@ body {
 #myLocation.error img {
   object-position: 11.04% 0;
 }
+#searchbar {
+  width: 392px;
+  height: 48px;
+  margin-top: 10px;
+}
+#searchbar input,
+#searchbar input:focus,
+#searchbar input:active,
+#searchbar input:hover {
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  padding: 10px;
+  font-size: 15px;
+  font-family: Arial, Helvetica, sans-serif;
+  border-radius: inherit;
+}
+.pac-container {
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important;
+}
 #leftbox {
   float: left;
   height: 600px;
@@ -42,7 +67,8 @@ body {
   opacity: 0.8;
   margin: 50px;
 }
-div {
+div,
+input {
   box-sizing: border-box;
 }
 #rightbox {
