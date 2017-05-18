@@ -1,5 +1,8 @@
 //todo next: for small devices check length of screen and if less than search bar width plus 100px or so, than adapt search bar to go to the end - 10px
 
+
+var toggleButton = <HTMLInputElement>document.getElementById("markertoggle")
+var markerData = []
 const MAP = "map"
 const SEARCH_BOX = "searchbar"
 const LOCATION_BOX = "myLocation"
@@ -38,10 +41,11 @@ let webMap: google.maps.Map
 
 function initMap() {
     const UTWENTE = new google.maps.LatLng(52.241033, 6.852413)
+    const TOKYO = new google.maps.LatLng(35.652832, 139.839478)
 
     webMap = new google.maps.Map(document.getElementById(MAP), {
-        center: UTWENTE,
-        zoom: 16,
+        center: TOKYO,
+        zoom: 12,
         zoomControl: true,
         zoomControlOptions: {
             position: google.maps.ControlPosition.TOP_LEFT
@@ -60,11 +64,29 @@ function initMap() {
     locationControl.act()
 
     const serachbar = new SearchBar(webMap, google.maps.ControlPosition.TOP_LEFT, SEARCH_BOX)
+
+    var mouseLatLng = webMap.addListener('click', function (e) {
+        if (toggleButton.checked) {
+            markerData.push(placeMarker(e.latLng, webMap)),
+                console.log(markerData)
+        }
+    })
 }
 
 function toLatlon(pos: Position): google.maps.LatLng {
     return new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude)
 }
+
+function placeMarker(LatLng, map) {
+        var marker = new google.maps.Marker({
+            position: LatLng,
+            map: webMap
+        })
+        return marker
+}
+
+
+
 
 class SimpleControl {
     div: HTMLDivElement
@@ -129,7 +151,7 @@ class SearchBar extends SimpleControl {
         this.div.appendChild(input)
         this.search = new google.maps.places.SearchBox(input)
 
-        const instance:SearchBar = this
+        const instance: SearchBar = this
 
         map.addListener('bounds_changed', () => instance.search.setBounds(map.getBounds()))
         this.search.addListener('places_changed', () => instance.searchChanged())
@@ -147,7 +169,7 @@ class SearchBar extends SimpleControl {
         this.markers = []
 
         const bounds = new google.maps.LatLngBounds();
-        
+
         places.forEach(place => {
             if (!place.geometry) {
                 console.log("Returned place contains no geometry");
@@ -172,7 +194,7 @@ class SearchBar extends SimpleControl {
             if (place.geometry.viewport) bounds.union(place.geometry.viewport)
             else bounds.extend(place.geometry.location)
         })
-        
+
         this.map.fitBounds(bounds)
     }
 }
