@@ -55,7 +55,7 @@ function initMap() {
     });
     const locationControl = new LocationControl(webMap, google.maps.ControlPosition.LEFT_TOP, LOCATION_BOX);
     const serachbar = new SearchBar(webMap, google.maps.ControlPosition.TOP_LEFT, SEARCH_BOX);
-    const addLocation = new SimpleControl(webMap, google.maps.ControlPosition.RIGHT_BOTTOM, ADD_ICON);
+    const addLocation = new AddLocation(webMap, google.maps.ControlPosition.RIGHT_BOTTOM, ADD_ICON);
     locationControl.act();
     // var mouseLatLng = webMap.addListener('click', function (e) {
     //     if (toggleButton.checked) {
@@ -67,13 +67,12 @@ function initMap() {
 function toLatlon(pos) {
     return new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
 }
-// function placeMarker(LatLng, map) {
-//         var marker = new google.maps.Marker({
-//             position: LatLng,
-//             map: webMap
-//         })
-//         return marker
-// }
+function placeMarker(map, latlng) {
+    return new google.maps.Marker({
+        position: latlng,
+        map: map
+    });
+}
 class SimpleControl {
     constructor(map, position, id) {
         const instance = this;
@@ -86,6 +85,11 @@ class SimpleControl {
         webMap.controls[position].push(this.div);
     }
     click(div, ev) { }
+}
+class AddLocation extends SimpleControl {
+    click(div, ev) {
+        navigator.geolocation.getCurrentPosition(pos => placeMarker(this.map, toLatlon(pos)));
+    }
 }
 class LocationControl extends SimpleControl {
     constructor(map, position, id) {
