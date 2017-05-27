@@ -14,7 +14,7 @@ const viewsDir = path.join(root, 'views');
 const publicDir = path.join(root, 'public');
 const db = Setup_1.Setup.setupDatabase(Config_1.Config.db.address, Config_1.Config.db.port, Config_1.Config.db.db, Config_1.Config.db.user.name, Config_1.Config.db.user.password);
 Setup_1.Setup.setupAuthGoogle(Config_1.Config.auth.id, Config_1.Config.auth.secret);
-Setup_1.Setup.setupExpress(app, __dirname);
+Setup_1.Setup.setupExpress(app, __dirname + "/../");
 Setup_1.Setup.setupSession(app, io);
 Setup_1.Setup.addAuthMiddleware(app);
 Setup_1.Setup.addAsMiddleware(app, "db", db);

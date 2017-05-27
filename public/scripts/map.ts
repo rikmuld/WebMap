@@ -1,11 +1,9 @@
 //todo next: for small devices check length of screen and if less than search bar width plus 100px or so, than adapt search bar to go to the end - 10px
 
-
-var toggleButton = <HTMLInputElement>document.getElementById("markertoggle")
-var markerData = []
 const MAP = "map"
 const SEARCH_BOX = "searchbar"
 const LOCATION_BOX = "myLocation"
+const ADD_ICON = "addIcon"
 const STYLE = [
     {
         "featureType": "road.highway",
@@ -61,32 +59,30 @@ function initMap() {
     })
 
     const locationControl = new LocationControl(webMap, google.maps.ControlPosition.LEFT_TOP, LOCATION_BOX)
+    const serachbar = new SearchBar(webMap, google.maps.ControlPosition.TOP_LEFT, SEARCH_BOX)
+    const addLocation = new SimpleControl(webMap, google.maps.ControlPosition.RIGHT_BOTTOM, ADD_ICON)
+
     locationControl.act()
 
-    const serachbar = new SearchBar(webMap, google.maps.ControlPosition.TOP_LEFT, SEARCH_BOX)
-
-    var mouseLatLng = webMap.addListener('click', function (e) {
-        if (toggleButton.checked) {
-            markerData.push(placeMarker(e.latLng, webMap)),
-                console.log(markerData)
-        }
-    })
+    // var mouseLatLng = webMap.addListener('click', function (e) {
+    //     if (toggleButton.checked) {
+    //         markerData.push(placeMarker(e.latLng, webMap)),
+    //             console.log(markerData)
+    //     }
+    // })
 }
 
 function toLatlon(pos: Position): google.maps.LatLng {
     return new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude)
 }
 
-function placeMarker(LatLng, map) {
-        var marker = new google.maps.Marker({
-            position: LatLng,
-            map: webMap
-        })
-        return marker
-}
-
-
-
+// function placeMarker(LatLng, map) {
+//         var marker = new google.maps.Marker({
+//             position: LatLng,
+//             map: webMap
+//         })
+//         return marker
+// }
 
 class SimpleControl {
     div: HTMLDivElement
