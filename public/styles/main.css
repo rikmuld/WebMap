@@ -67,4 +67,5 @@ input {
   height: 64px;
   background-size: cover;
   background-image: url("/icons/plus.png");
+  border-radius: 50%;
 }
