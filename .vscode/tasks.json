@@ -1,10 +1,21 @@
 {
-    // See https://go.microsoft.com/fwlink/?LinkId=733558
-    // for the documentation about the tasks.json format
-    "version": "0.1.0",
-    "command": "tsc",
-    "isShellCommand": true,
-    "args": ["--watch", "-p", "./public/scripts"],
-    "showOutput": "silent",
-    "problemMatcher": "$tsc"
+    "version": "0.1.0",    
+    "tasks": [
+        {
+            "taskName": "client",
+            "command": "tsc",
+            "isShellCommand": true,
+            "args": ["--watch", "-p", "./public/scripts"],
+            "showOutput": "silent",
+            "problemMatcher": "$tsc"
+        },
+        {
+            "taskName": "server",
+            "command": "tsc",
+            "isShellCommand": true,
+            "args": ["--watch", "-p", "./server"],
+            "showOutput": "silent",
+            "problemMatcher": "$tsc"
+        }
+    ]
 }
