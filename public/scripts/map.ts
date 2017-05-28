@@ -60,7 +60,7 @@ function initMap() {
 
     const locationControl = new LocationControl(webMap, google.maps.ControlPosition.LEFT_TOP, LOCATION_BOX)
     const serachbar = new SearchBar(webMap, google.maps.ControlPosition.TOP_LEFT, SEARCH_BOX)
-    const addLocation = new AddLocation(webMap, google.maps.ControlPosition.RIGHT_BOTTOM, ADD_ICON)
+    const addLocation = new AddLocation(webMap, google.maps.ControlPosition.RIGHT_BOTTOM, ADD_ICON, locationControl)
 
     locationControl.act()
 
@@ -93,10 +93,15 @@ class SimpleControl {
         this.map = map
 
         this.div = document.createElement('div')
+        this.div.id = id
+
         this.div.addEventListener<"click">("click", function (this: HTMLDivElement, event: MouseEvent) {
             instance.click(this, event)
         })
-        this.div.id = id
+        
+        this.div.addEventListener('gesturestart', function (event) {
+            event.preventDefault()   
+        }, false)
 
         webMap.controls[position].push(this.div)
     }
@@ -105,8 +110,16 @@ class SimpleControl {
 }
 
 class AddLocation extends SimpleControl {
+    location: LocationControl
+
+    constructor(map: google.maps.Map, position: google.maps.ControlPosition, id: string, loc:LocationControl) {
+        super(map, position, id)
+        this.location = loc
+    }
+
     click(div: HTMLDivElement, ev?: MouseEvent): any {
         navigator.geolocation.getCurrentPosition(pos => placeMarker(this.map, toLatlon(pos)))
+        this.location.act()
     }
 }
 

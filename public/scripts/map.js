@@ -55,7 +55,7 @@ function initMap() {
     });
     const locationControl = new LocationControl(webMap, google.maps.ControlPosition.LEFT_TOP, LOCATION_BOX);
     const serachbar = new SearchBar(webMap, google.maps.ControlPosition.TOP_LEFT, SEARCH_BOX);
-    const addLocation = new AddLocation(webMap, google.maps.ControlPosition.RIGHT_BOTTOM, ADD_ICON);
+    const addLocation = new AddLocation(webMap, google.maps.ControlPosition.RIGHT_BOTTOM, ADD_ICON, locationControl);
     locationControl.act();
     // var mouseLatLng = webMap.addListener('click', function (e) {
     //     if (toggleButton.checked) {
@@ -78,17 +78,25 @@ class SimpleControl {
         const instance = this;
         this.map = map;
         this.div = document.createElement('div');
+        this.div.id = id;
         this.div.addEventListener("click", function (event) {
             instance.click(this, event);
         });
-        this.div.id = id;
+        this.div.addEventListener('gesturestart', function (event) {
+            event.preventDefault();
+        }, false);
         webMap.controls[position].push(this.div);
     }
     click(div, ev) { }
 }
 class AddLocation extends SimpleControl {
+    constructor(map, position, id, loc) {
+        super(map, position, id);
+        this.location = loc;
+    }
     click(div, ev) {
         navigator.geolocation.getCurrentPosition(pos => placeMarker(this.map, toLatlon(pos)));
+        this.location.act();
     }
 }
 class LocationControl extends SimpleControl {
