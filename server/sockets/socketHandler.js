@@ -9,7 +9,8 @@ var SocketHandler;
     SocketHandler.bindHandlers = bindHandlers;
     function connection(app) {
         return socket => {
-            socket.on(sockets_1.SocketIDs.ON_LOCATION_ADDED, sockets_1.Sockets.addLocation(app, socket));
+            socket.on(sockets_1.SocketIDs.LOCATION_ADDED, sockets_1.Sockets.addLocation(app, socket));
+            socket.on(sockets_1.SocketIDs.LOCATIONS_REQUESTED, sockets_1.Sockets.getLocations(app, socket));
         };
     }
     SocketHandler.connection = connection;

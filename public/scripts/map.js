@@ -29,10 +29,11 @@ const STYLE = [
         ]
     }
 ];
+let webMap;
 function initMap() {
     const UTWENTE = new google.maps.LatLng(52.241033, 6.852413);
     const TOKYO = new google.maps.LatLng(35.652832, 139.839478);
-    const webMap = new google.maps.Map(document.getElementById(MAP), {
+    webMap = new google.maps.Map(document.getElementById(MAP), {
         center: TOKYO,
         zoom: 12,
         zoomControl: true,
@@ -52,6 +53,7 @@ function initMap() {
     const serachbar = new SearchBar(webMap, google.maps.ControlPosition.TOP_LEFT, SEARCH_BOX);
     const addLocation = new AddLocation(webMap, google.maps.ControlPosition.RIGHT_BOTTOM, ADD_ICON, locationControl);
     locationControl.act();
+    Sockets.getLocations();
     // var mouseLatLng = webMap.addListener('click', function (e) {
     //     if (toggleButton.checked) {
     //         markerData.push(placeMarker(e.latLng, webMap)),
@@ -61,6 +63,9 @@ function initMap() {
 }
 function toLatlon(pos) {
     return new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+}
+function mkLatLng(lat, lng) {
+    return new google.maps.LatLng(lat, lng);
 }
 function placeMarker(map, latlng) {
     return new google.maps.Marker({

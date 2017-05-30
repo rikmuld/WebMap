@@ -11,7 +11,8 @@ export namespace SocketHandler {
 
     export function connection(app: express.Express): Handler {
         return socket => {
-            socket.on(SocketIDs.ON_LOCATION_ADDED, Sockets.addLocation(app, socket))
+            socket.on(SocketIDs.LOCATION_ADDED, Sockets.addLocation(app, socket))
+            socket.on(SocketIDs.LOCATIONS_REQUESTED, Sockets.getLocations(app, socket))
         }
     }
 }

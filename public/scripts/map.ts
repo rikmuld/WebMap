@@ -31,11 +31,13 @@ const STYLE = [
     }
 ]
 
+let webMap: google.maps.Map
+
 function initMap() {
     const UTWENTE = new google.maps.LatLng(52.241033, 6.852413)
     const TOKYO = new google.maps.LatLng(35.652832, 139.839478)
 
-    const webMap = new google.maps.Map(document.getElementById(MAP), {
+    webMap = new google.maps.Map(document.getElementById(MAP), {
         center: TOKYO,
         zoom: 12,
         zoomControl: true,
@@ -57,6 +59,7 @@ function initMap() {
     const addLocation = new AddLocation(webMap, google.maps.ControlPosition.RIGHT_BOTTOM, ADD_ICON, locationControl)
 
     locationControl.act()
+    Sockets.getLocations()
 
     // var mouseLatLng = webMap.addListener('click', function (e) {
     //     if (toggleButton.checked) {
@@ -68,6 +71,10 @@ function initMap() {
 
 function toLatlon(pos: Position): google.maps.LatLng {
     return new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude)
+}
+
+function mkLatLng(lat: number, lng: number): google.maps.LatLng {
+    return new google.maps.LatLng(lat, lng)
 }
 
 function placeMarker(map: google.maps.Map, latlng: google.maps.LatLng): google.maps.Marker {

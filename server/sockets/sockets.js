@@ -3,7 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const tables_1 = require("../database/tables");
 var SocketIDs;
 (function (SocketIDs) {
-    SocketIDs.ON_LOCATION_ADDED = "addLocation";
+    SocketIDs.LOCATION_ADDED = "addLocation";
+    SocketIDs.LOCATIONS_REQUESTED = "addLocation";
 })(SocketIDs = exports.SocketIDs || (exports.SocketIDs = {}));
 var Sockets;
 (function (Sockets) {
@@ -13,4 +14,15 @@ var Sockets;
         };
     }
     Sockets.addLocation = addLocation;
+    function getLocations(app, socket) {
+        return () => {
+            tables_1.Tables.Location.find({}, (err, locations) => {
+                if (err)
+                    console.log(err);
+                else
+                    socket.emit(SocketIDs.LOCATIONS_REQUESTED, locations.map(l => tables_1.TableData.Location.location(l.lat, l.lng)));
+            });
+        };
+    }
+    Sockets.getLocations = getLocations;
 })(Sockets = exports.Sockets || (exports.Sockets = {}));
