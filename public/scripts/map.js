@@ -5,31 +5,27 @@ const LOCATION_BOX = "myLocation";
 const ADD_ICON = "addIcon";
 const STYLE = [
     {
-        "featureType": "road.highway",
-        "stylers": [
-            {
-                "color": "#ffc023"
-            },
-            {
-                "visibility": "simplified"
-            }
+        featureType: "road.highway",
+        stylers: [
+            { color: "#ffc023" },
+            { visibility: "simplified" }
         ]
-    },
-    {
-        "featureType": "water",
-        "stylers": [
-            {
-                "color": "#98d8ee"
-            }
+    }, {
+        featureType: "water",
+        stylers: [
+            { color: "#98d8ee" }
         ]
-    },
-    {
-        "featureType": "water",
-        "elementType": "geometry.fill",
-        "stylers": [
-            {
-                "color": "#a1e3f8"
-            }
+    }, {
+        featureType: "water",
+        elementType: "geometry.fill",
+        stylers: [
+            { color: "#a1e3f8" }
+        ]
+    }, {
+        featureType: "road.highway",
+        elementType: "labels",
+        stylers: [
+            { visibility: "off" }
         ]
     }
 ];

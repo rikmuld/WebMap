@@ -10,13 +10,14 @@ import * as passport from 'passport'
 import * as redis from "redis"
 import * as redisConnect from "connect-redis"
 
-import {Config} from './config'
+import { Config } from './config'
+import { Tables } from './database/tables'
 
 const authGoogle = require('passport-google-oauth2')
 
 const useRedis = Config.session.redis
-const redisStore = useRedis ? redisConnect(session):null
-const redisClient = useRedis ? redis.createClient():null
+const redisStore = useRedis ? redisConnect(session) : null
+const redisClient = useRedis ? redis.createClient() : null
 
 //move GoogleProfile and simpleProfile
 interface GoogleProfile {
@@ -43,7 +44,7 @@ export namespace Setup {
         server.listen(3000)
     }
 
-    export function setupExpress(app: express.Express, root:string) {
+    export function setupExpress(app: express.Express, root: string) {
         const viewsDir = path.join(root, 'views')
         const publicDir = path.join(root, 'public')
 
@@ -75,7 +76,7 @@ export namespace Setup {
         app.use(sessionMiddle)
     }
 
-    export function setupDatabase(address:string, port:number, database:string, user:string, password:string): mongoose.Connection {
+    export function setupDatabase(address: string, port: number, database: string, user: string, password: string): mongoose.Connection {
         mongoose.connect("mongodb://" + address + ":" + port + "/" + database, { user: user, pass: password })
         var db = mongoose.connection
 
@@ -83,6 +84,8 @@ export namespace Setup {
         db.once('open', function (callback) {
             console.log("Connected to database")
         })
+
+        Tables.initTables()
 
         return db
     }
@@ -113,7 +116,7 @@ export namespace Setup {
         app.use(passport.session())
     }
 
-    export function addAsMiddleware(app: express.Express, name:string, data) {
+    export function addAsMiddleware(app: express.Express, name: string, data) {
         app.use((req: express.Request, res: express.Response, next) => {
             req[name] = data
             next()

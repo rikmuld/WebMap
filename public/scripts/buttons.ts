@@ -29,7 +29,13 @@ class AddLocation extends SimpleControl {
     }
 
     click(div: HTMLDivElement, ev?: MouseEvent): any {
-        getPosition(pos => placeMarker(this.map, toLatlon(pos)))
+        getPosition(pos => {
+            const latlng = toLatlon(pos)
+
+            placeMarker(this.map, latlng)
+            Sockets.addLocation(pos.coords.latitude, pos.coords.longitude)
+        })
+
         this.location.act()
     }
 }
@@ -87,11 +93,6 @@ class SearchBar extends SimpleControl {
         this.markers.forEach(marker => marker.setMap(null))
         this.markers = []
 
-
-        if (places.length == 0) {
-            return;
-        }
-
         const bounds = new google.maps.LatLngBounds();
 
         places.forEach(place => {
@@ -100,18 +101,8 @@ class SearchBar extends SimpleControl {
                 return
             }
 
-            const icon = {
-                url: place.icon,
-                size: new google.maps.Size(71, 71),
-                origin: new google.maps.Point(0, 0),
-                anchor: new google.maps.Point(17, 34),
-                scaledSize: new google.maps.Size(25, 25)
-            }
-
             this.markers.push(new google.maps.Marker({
                 map: this.map,
-                icon: icon,
-                title: place.name,
                 position: place.geometry.location
             }))
 

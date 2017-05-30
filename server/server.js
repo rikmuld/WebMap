@@ -6,6 +6,7 @@ const socket = require("socket.io");
 const path = require("path");
 const Setup_1 = require("./Setup");
 const Config_1 = require("./Config");
+const socketHandler_1 = require("./sockets/socketHandler");
 const app = express();
 const server = http.createServer(app);
 const io = socket(server);
@@ -18,6 +19,7 @@ Setup_1.Setup.setupExpress(app, __dirname + "/../");
 Setup_1.Setup.setupSession(app, io);
 Setup_1.Setup.addAuthMiddleware(app);
 Setup_1.Setup.addAsMiddleware(app, "db", db);
+socketHandler_1.SocketHandler.bindHandlers(app, io);
 app.get("*", (req, res) => {
     res.render("map");
 });

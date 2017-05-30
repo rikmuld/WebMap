@@ -10,6 +10,7 @@ const passport = require("passport");
 const redis = require("redis");
 const redisConnect = require("connect-redis");
 const config_1 = require("./config");
+const tables_1 = require("./database/tables");
 const authGoogle = require('passport-google-oauth2');
 const useRedis = config_1.Config.session.redis;
 const redisStore = useRedis ? redisConnect(session) : null;
@@ -67,6 +68,7 @@ var Setup;
         db.once('open', function (callback) {
             console.log("Connected to database");
         });
+        tables_1.Tables.initTables();
         return db;
     }
     Setup.setupDatabase = setupDatabase;
