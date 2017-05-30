@@ -35,14 +35,11 @@ const STYLE = [
     }
 ]
 
-let webMap: google.maps.Map
-let marker: google.maps.Marker
-
 function initMap() {
     const UTWENTE = new google.maps.LatLng(52.241033, 6.852413)
     const TOKYO = new google.maps.LatLng(35.652832, 139.839478)
 
-    webMap = new google.maps.Map(document.getElementById(MAP), {
+    const webMap = new google.maps.Map(document.getElementById(MAP), {
         center: TOKYO,
         zoom: 12,
         zoomControl: true,
@@ -81,5 +78,11 @@ function placeMarker(map: google.maps.Map, latlng: google.maps.LatLng): google.m
     return new google.maps.Marker({
         position: latlng,
         map: map
+    })
+}
+
+function getPosition(callback: (pos: Position) => void, error?: () => void) {
+    navigator.geolocation.getCurrentPosition(callback, () => {
+        console.log("Geolocation is not available!")
     })
 }

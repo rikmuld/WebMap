@@ -5,8 +5,8 @@ import * as path from 'path'
 import * as stylus from 'stylus'
 import * as bodyParser from 'body-parser'
 
-import {Setup} from "./Setup"
-import {Config} from "./Config"
+import { Setup } from "./Setup"
+import { Config } from "./Config"
 
 const app = express()
 const server = http.createServer(app)

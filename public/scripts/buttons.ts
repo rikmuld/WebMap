@@ -14,7 +14,7 @@ class SimpleControl {
             instance.click(this, event)
         })
 
-        webMap.controls[position].push(this.div)
+        this.map.controls[position].push(this.div)
     }
 
     click(div: HTMLDivElement, ev: MouseEvent) { }
@@ -29,7 +29,7 @@ class AddLocation extends SimpleControl {
     }
 
     click(div: HTMLDivElement, ev?: MouseEvent): any {
-        navigator.geolocation.getCurrentPosition(pos => placeMarker(this.map, toLatlon(pos)))
+        getPosition(pos => placeMarker(this.map, toLatlon(pos)))
         this.location.act()
     }
 }
@@ -39,18 +39,16 @@ class LocationControl extends SimpleControl {
         super(map, position, id)
 
         const img = document.createElement('img')
-        img.src = "http://maps.gstatic.com/tactile/mylocation/mylocation-sprite-2x.png"
+        img.src = "/icons/location.png"
 
         this.div.appendChild(img)
     }
 
     act() {
-        if (navigator.geolocation) {
-            this.div.firstElementChild.classList.remove("error")
-            navigator.geolocation.getCurrentPosition(position => webMap.setCenter(toLatlon(position)))
-        } else {
+        this.div.firstElementChild.classList.remove("error")
+        getPosition(position => this.map.setCenter(toLatlon(position)), () => {
             this.div.firstElementChild.classList.add("error")
-        }
+        })
     }
 
     click(div: HTMLDivElement, ev?: MouseEvent): any {
