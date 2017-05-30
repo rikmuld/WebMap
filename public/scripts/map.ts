@@ -65,6 +65,10 @@ function initMap() {
 
     locationControl.act()
 
+    document.addEventListener('gesturestart', function (event) {
+        event.preventDefault()
+    }, false)
+
     // var mouseLatLng = webMap.addListener('click', function (e) {
     //     if (toggleButton.checked) {
     //         markerData.push(placeMarker(e.latLng, webMap)),
@@ -99,10 +103,6 @@ class SimpleControl {
         this.div.addEventListener<"click">("click", function (this: HTMLDivElement, event: MouseEvent) {
             instance.click(this, event)
         })
-        
-        this.div.addEventListener('gesturestart', function (event) {
-            event.preventDefault()   
-        }, false)
 
         webMap.controls[position].push(this.div)
     }
@@ -113,7 +113,7 @@ class SimpleControl {
 class AddLocation extends SimpleControl {
     location: LocationControl
 
-    constructor(map: google.maps.Map, position: google.maps.ControlPosition, id: string, loc:LocationControl) {
+    constructor(map: google.maps.Map, position: google.maps.ControlPosition, id: string, loc: LocationControl) {
         super(map, position, id)
         this.location = loc
     }
