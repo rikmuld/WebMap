@@ -1,8 +1,9 @@
 //todo next: for small devices check length of screen and if less than search bar width plus 100px or so, than adapt search bar to go to the end - 10px
-const toggleButton = document.getElementById("markertoggle");
+
 const MAP = "map";
 const SEARCH_BOX = "searchbar";
 const LOCATION_BOX = "myLocation";
+const ADD_ICON = "addIcon";
 const STYLE = [
     {
         "featureType": "road.highway",
@@ -55,22 +56,25 @@ function initMap() {
         overviewMapControl: false
     });
     const locationControl = new LocationControl(webMap, google.maps.ControlPosition.LEFT_TOP, LOCATION_BOX);
-    locationControl.act();
     const serachbar = new SearchBar(webMap, google.maps.ControlPosition.TOP_LEFT, SEARCH_BOX);
-    webMap.addListener('click', function (e) {
-        if (marker)
-            marker.setMap(null);
-        if (toggleButton.checked)
-            marker = placeMarker(e.latLng, webMap);
-    });
+
+    const addLocation = new AddLocation(webMap, google.maps.ControlPosition.RIGHT_BOTTOM, ADD_ICON, locationControl);
+    locationControl.act();
+    // var mouseLatLng = webMap.addListener('click', function (e) {
+    //     if (toggleButton.checked) {
+    //         markerData.push(placeMarker(e.latLng, webMap)),
+    //             console.log(markerData)
+    //     }
+    // })
 }
 function toLatlon(pos) {
     return new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
 }
-function placeMarker(LatLng, map) {
+
+function placeMarker(map, latlng) {
     return new google.maps.Marker({
-        position: LatLng,
-        map: webMap
+        position: latlng,
+        map: map
     });
 }
 class SimpleControl {
@@ -78,13 +82,26 @@ class SimpleControl {
         const instance = this;
         this.map = map;
         this.div = document.createElement('div');
+        this.div.id = id;
         this.div.addEventListener("click", function (event) {
             instance.click(this, event);
         });
-        this.div.id = id;
+        this.div.addEventListener('gesturestart', function (event) {
+            event.preventDefault();
+        }, false);
         webMap.controls[position].push(this.div);
     }
     click(div, ev) { }
+}
+class AddLocation extends SimpleControl {
+    constructor(map, position, id, loc) {
+        super(map, position, id);
+        this.location = loc;
+    }
+    click(div, ev) {
+        navigator.geolocation.getCurrentPosition(pos => placeMarker(this.map, toLatlon(pos)));
+        this.location.act();
+    }
 }
 class LocationControl extends SimpleControl {
     constructor(map, position, id) {

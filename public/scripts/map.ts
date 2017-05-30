@@ -1,9 +1,9 @@
 //todo next: for small devices check length of screen and if less than search bar width plus 100px or so, than adapt search bar to go to the end - 10px
 
-const toggleButton = <HTMLInputElement>document.getElementById("markertoggle")
 const MAP = "map"
 const SEARCH_BOX = "searchbar"
 const LOCATION_BOX = "myLocation"
+const ADD_ICON = "addIcon"
 const STYLE = [
     {
         "featureType": "road.highway",
@@ -60,24 +60,27 @@ function initMap() {
     })
 
     const locationControl = new LocationControl(webMap, google.maps.ControlPosition.LEFT_TOP, LOCATION_BOX)
+    const serachbar = new SearchBar(webMap, google.maps.ControlPosition.TOP_LEFT, SEARCH_BOX)
+    const addLocation = new AddLocation(webMap, google.maps.ControlPosition.RIGHT_BOTTOM, ADD_ICON, locationControl)
+
     locationControl.act()
 
-    const serachbar = new SearchBar(webMap, google.maps.ControlPosition.TOP_LEFT, SEARCH_BOX)
-
-    webMap.addListener('click', function (e) {
-        if (marker) marker.setMap(null)
-        if (toggleButton.checked) marker = placeMarker(e.latLng, webMap)
-    })
+    // var mouseLatLng = webMap.addListener('click', function (e) {
+    //     if (toggleButton.checked) {
+    //         markerData.push(placeMarker(e.latLng, webMap)),
+    //             console.log(markerData)
+    //     }
+    // })
 }
 
 function toLatlon(pos: Position): google.maps.LatLng {
     return new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude)
 }
 
-function placeMarker(LatLng, map) {
+function placeMarker(map: google.maps.Map, latlng: google.maps.LatLng): google.maps.Marker {
     return new google.maps.Marker({
-        position: LatLng,
-        map: webMap
+        position: latlng,
+        map: map
     })
 }
 
@@ -91,15 +94,34 @@ class SimpleControl {
         this.map = map
 
         this.div = document.createElement('div')
+        this.div.id = id
+
         this.div.addEventListener<"click">("click", function (this: HTMLDivElement, event: MouseEvent) {
             instance.click(this, event)
         })
-        this.div.id = id
+        
+        this.div.addEventListener('gesturestart', function (event) {
+            event.preventDefault()   
+        }, false)
 
         webMap.controls[position].push(this.div)
     }
 
     click(div: HTMLDivElement, ev: MouseEvent) { }
+}
+
+class AddLocation extends SimpleControl {
+    location: LocationControl
+
+    constructor(map: google.maps.Map, position: google.maps.ControlPosition, id: string, loc:LocationControl) {
+        super(map, position, id)
+        this.location = loc
+    }
+
+    click(div: HTMLDivElement, ev?: MouseEvent): any {
+        navigator.geolocation.getCurrentPosition(pos => placeMarker(this.map, toLatlon(pos)))
+        this.location.act()
+    }
 }
 
 class LocationControl extends SimpleControl {
