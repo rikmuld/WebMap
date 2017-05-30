@@ -1,8 +1,6 @@
 //todo next: for small devices check length of screen and if less than search bar width plus 100px or so, than adapt search bar to go to the end - 10px
 
-
-var toggleButton = <HTMLInputElement>document.getElementById("markertoggle")
-var markerData = []
+const toggleButton = <HTMLInputElement>document.getElementById("markertoggle")
 const MAP = "map"
 const SEARCH_BOX = "searchbar"
 const LOCATION_BOX = "myLocation"
@@ -38,6 +36,7 @@ const STYLE = [
 ]
 
 let webMap: google.maps.Map
+let marker: google.maps.Marker
 
 function initMap() {
     const UTWENTE = new google.maps.LatLng(52.241033, 6.852413)
@@ -65,11 +64,9 @@ function initMap() {
 
     const serachbar = new SearchBar(webMap, google.maps.ControlPosition.TOP_LEFT, SEARCH_BOX)
 
-    var mouseLatLng = webMap.addListener('click', function (e) {
-        if (toggleButton.checked) {
-            markerData.push(placeMarker(e.latLng, webMap)),
-                console.log(markerData)
-        }
+    webMap.addListener('click', function (e) {
+        if (marker) marker.setMap(null)
+        if (toggleButton.checked) marker = placeMarker(e.latLng, webMap)
     })
 }
 
@@ -78,15 +75,11 @@ function toLatlon(pos: Position): google.maps.LatLng {
 }
 
 function placeMarker(LatLng, map) {
-        var marker = new google.maps.Marker({
-            position: LatLng,
-            map: webMap
-        })
-        return marker
+    return new google.maps.Marker({
+        position: LatLng,
+        map: webMap
+    })
 }
-
-
-
 
 class SimpleControl {
     div: HTMLDivElement
@@ -161,12 +154,13 @@ class SearchBar extends SimpleControl {
         const instance = this
         const places = this.search.getPlaces();
 
+        this.markers.forEach(marker => marker.setMap(null))
+        this.markers = []
+
+
         if (places.length == 0) {
             return;
         }
-
-        this.markers.forEach(marker => marker.setMap(null))
-        this.markers = []
 
         const bounds = new google.maps.LatLngBounds();
 
@@ -176,7 +170,7 @@ class SearchBar extends SimpleControl {
                 return
             }
 
-            var icon = {
+            const icon = {
                 url: place.icon,
                 size: new google.maps.Size(71, 71),
                 origin: new google.maps.Point(0, 0),
