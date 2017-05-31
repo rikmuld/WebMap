@@ -11,20 +11,11 @@ const redis = require("redis");
 const redisConnect = require("connect-redis");
 const config_1 = require("./config");
 const tables_1 = require("./database/tables");
+const tableHelper_1 = require("./database/tableHelper");
 const authGoogle = require('passport-google-oauth2');
 const useRedis = config_1.Config.session.redis;
 const redisStore = useRedis ? redisConnect(session) : null;
 const redisClient = useRedis ? redis.createClient() : null;
-//get rid of all other info in profile
-function simpleProfile(profile) {
-    return {
-        email: profile.email,
-        name: {
-            familyName: profile.name.familyName,
-            givenName: profile.name.givenName
-        }
-    };
-}
 var Setup;
 (function (Setup) {
     function startServer(server) {
@@ -81,13 +72,20 @@ var Setup;
         };
         const handleLogin = (request, accessToken, refreshToken, profile, done) => {
             process.nextTick(() => {
-                //Users.getByGProfile(profile).then(u => done(null, Users.simplify(u)), e => done(null, null))
-                //save to db then get
-                done(null, simpleProfile(profile));
+                const newUser = tables_1.Tables.User.create(tables_1.TableData.User.user(profile.email, profile.name.givenName, profile.name.familyName)); //rather would have this lazy
+                const findUser = { id: profile.email };
+                tableHelper_1.TableHelper.createOrReturn(tables_1.Tables.User, findUser, newUser).then((user) => done(null, user), err => done(null, null));
             });
         };
-        passport.serializeUser((user, done) => done(null, user));
-        passport.deserializeUser((user, done) => done(null, user));
+        passport.serializeUser((user, done) => done(null, user.id));
+        passport.deserializeUser((userId, done) => {
+            tables_1.Tables.User.findOne({ id: userId }, (err, user) => {
+                if (err || !user)
+                    done(null, null);
+                else
+                    done(null, user);
+            });
+        });
         passport.use(new authGoogle.Strategy(googleLogin, handleLogin));
     }
     Setup.setupAuthGoogle = setupAuthGoogle;

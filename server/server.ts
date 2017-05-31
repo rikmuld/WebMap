@@ -28,7 +28,7 @@ Setup.addAsMiddleware(app, "db", db)
 SocketHandler.bindHandlers(app, io)
 
 app.get("*", (req, res) => {
-    res.render("map")
+    res.render("map", { user: req.user })
 })
 
 server.listen(3000)

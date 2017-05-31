@@ -1,15 +1,23 @@
 import * as mongoose from 'mongoose'
 
 export namespace Tables {
-    export let Location: mongoose.Model<TableData.Location.LocationDocument>
+    export let Markers: mongoose.Model<TableData.Location.LocationDocument>
+    export let User: mongoose.Model<TableData.User.UserDocument>
 
     export function initTables() {
-        Location = mongoose.model<TableData.Location.LocationDocument>('Location', TableData.Location.locationSchema)
+        Markers = mongoose.model<TableData.Location.LocationDocument>(TableData.Location.ID, TableData.Location.locationSchema)
+        User = mongoose.model<TableData.User.UserDocument>(TableData.User.ID, TableData.User.userSchema)
     }
 }
 
 export namespace TableData {
+    function refrence(to: string): {} {
+        return { type: String, ref: to }
+    }
+
     export namespace Location {
+        export const ID = "Location"
+
         export const locationSchema = new mongoose.Schema({
             lat: Number,
             lng: Number
@@ -26,6 +34,35 @@ export namespace TableData {
             return {
                 lat: lat,
                 lng: lng
+            }
+        }
+    }
+
+    export namespace User {
+        export const ID = "User"
+
+        export const userSchema = new mongoose.Schema({
+            id: String,
+            surename: String,
+            name: String,
+            locations: [refrence(Location.ID)]
+        })
+
+        export interface User {
+            id: string,
+            surename: string,
+            name: string,
+            locations: Location.Location[]
+        }
+
+        export interface UserDocument extends User, mongoose.Document { }
+
+        export function user(id: string, name: string, surename: string): User {
+            return {
+                id: id,
+                name: name,
+                surename: surename,
+                locations: []
             }
         }
     }

@@ -11,7 +11,8 @@ import * as redis from "redis"
 import * as redisConnect from "connect-redis"
 
 import { Config } from './config'
-import { Tables } from './database/tables'
+import { Tables, TableData } from './database/tables'
+import { TableHelper } from './database/tableHelper'
 
 const authGoogle = require('passport-google-oauth2')
 
@@ -19,27 +20,15 @@ const useRedis = Config.session.redis
 const redisStore = useRedis ? redisConnect(session) : null
 const redisClient = useRedis ? redis.createClient() : null
 
-//move GoogleProfile and simpleProfile
-interface GoogleProfile {
-    email: string,
-    name: {
-        familyName: string,
-        givenName: string
-    }
-}
-
-//get rid of all other info in profile
-function simpleProfile(profile: GoogleProfile): GoogleProfile {
-    return {
-        email: profile.email,
+export namespace Setup {
+    interface GoogleProfile {
+        email: string,
         name: {
-            familyName: profile.name.familyName,
-            givenName: profile.name.givenName
+            familyName: string,
+            givenName: string
         }
     }
-}
 
-export namespace Setup {
     export function startServer(server: http.Server) {
         server.listen(3000)
     }
@@ -100,14 +89,21 @@ export namespace Setup {
 
         const handleLogin = (request: express.Request, accessToken, refreshToken, profile: GoogleProfile, done) => {
             process.nextTick(() => {
-                //Users.getByGProfile(profile).then(u => done(null, Users.simplify(u)), e => done(null, null))
-                //save to db then get
-                done(null, simpleProfile(profile))
+                const newUser = Tables.User.create(TableData.User.user(profile.email, profile.name.givenName, profile.name.familyName)) //rather would have this lazy
+                const findUser = { id: profile.email }
+
+                TableHelper.createOrReturn(Tables.User, findUser, newUser).then((user) => done(null, user), err => done(null, null))
             })
         }
 
-        passport.serializeUser((user, done) => done(null, user))
-        passport.deserializeUser((user, done) => done(null, user))
+        passport.serializeUser((user, done) => done(null, user.id))
+        passport.deserializeUser((userId, done) => {
+            Tables.User.findOne({ id: userId }, (err, user) => {
+                if (err || !user) done(null, null)
+                else done(null, user)
+            })
+        })
+
         passport.use(new authGoogle.Strategy(googleLogin, handleLogin))
     }
 
@@ -115,6 +111,7 @@ export namespace Setup {
         app.use(passport.initialize())
         app.use(passport.session())
     }
+
 
     export function addAsMiddleware(app: express.Express, name: string, data) {
         app.use((req: express.Request, res: express.Response, next) => {
