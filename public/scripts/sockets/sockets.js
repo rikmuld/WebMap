@@ -6,7 +6,6 @@ var SocketIDs;
 var Sockets;
 (function (Sockets) {
     function addLocation(lat, lng) {
-        console.log("2");
         SocketHandler.socket.emit(SocketIDs.ON_LOCATION_ADDED, lat, lng);
     }
     Sockets.addLocation = addLocation;
