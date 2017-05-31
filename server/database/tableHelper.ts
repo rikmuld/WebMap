@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose'
 
-import { Future } from '../structures/Future'
+import { Future } from '../structures/future'
 
 export namespace TableHelper {
     export function createOrReturn<A extends mongoose.Document>(model: mongoose.Model<A>, query: {}, obj: {}): Future<A> {

@@ -7,7 +7,7 @@ import * as bodyParser from 'body-parser'
 import * as passport from 'passport'
 
 import { Setup } from "./Setup"
-import { Config } from "./Config"
+import { Config } from "./config"
 import { SocketHandler } from "./sockets/socketHandler"
 
 const app = express()
