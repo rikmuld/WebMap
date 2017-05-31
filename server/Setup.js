@@ -67,7 +67,7 @@ var Setup;
         const googleLogin = {
             clientID: googleID,
             clientSecret: googleSecret,
-            callbackURL: "http://" + config_1.Config.auth.callback + "/auth/google/callback",
+            callbackURL: "https://" + config_1.Config.auth.callback + "/auth/google/callback",
             passReqToCallback: true
         };
         const handleLogin = (request, accessToken, refreshToken, profile, done) => {

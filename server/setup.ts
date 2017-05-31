@@ -85,7 +85,7 @@ export namespace Setup {
         const googleLogin = {
             clientID: googleID,
             clientSecret: googleSecret,
-            callbackURL: "http://" + Config.auth.callback + "/auth/google/callback",
+            callbackURL: "https://" + Config.auth.callback + "/auth/google/callback",
             passReqToCallback: true
         }
 
