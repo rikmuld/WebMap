@@ -43,26 +43,25 @@ export namespace TableData {
 
         export const userSchema = new mongoose.Schema({
             id: String,
-            surename: String,
             name: String,
+            icon: String,
             locations: [refrence(Location.ID)]
         })
 
         export interface User {
             id: string,
-            surename: string,
             name: string,
-            locations: Location.Location[]
+            icon: string,
+            locations?: Location.Location[]
         }
 
         export interface UserDocument extends User, mongoose.Document { }
 
-        export function user(id: string, name: string, surename: string): User {
+        export function user(id: string, name: string, icon: string): User {
             return {
                 id: id,
                 name: name,
-                surename: surename,
-                locations: []
+                icon: icon
             }
         }
     }

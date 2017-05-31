@@ -23,9 +23,11 @@ const redisClient = useRedis ? redis.createClient() : null
 export namespace Setup {
     interface GoogleProfile {
         email: string,
-        name: {
-            familyName: string,
-            givenName: string
+        displayName: string,
+        _json: {
+            image: {
+                url: string
+            }
         }
     }
 
@@ -89,18 +91,17 @@ export namespace Setup {
 
         const handleLogin = (request: express.Request, accessToken, refreshToken, profile: GoogleProfile, done) => {
             process.nextTick(() => {
-                const newUser = Tables.User.create(TableData.User.user(profile.email, profile.name.givenName, profile.name.familyName)) //rather would have this lazy
+                const newUser = TableData.User.user(profile.email, profile.displayName, profile._json.image.url) //rather would have this lazy, also img is size 50px, better set to whatever size needed
                 const findUser = { id: profile.email }
 
-                TableHelper.createOrReturn(Tables.User, findUser, newUser).then((user) => done(null, user), err => done(null, null))
+                TableHelper.createOrReturn(Tables.User, findUser, newUser).then(user => done(null, user), err => done(err, null))
             })
         }
 
         passport.serializeUser((user, done) => done(null, user.id))
         passport.deserializeUser((userId, done) => {
             Tables.User.findOne({ id: userId }, (err, user) => {
-                if (err || !user) done(null, null)
-                else done(null, user)
+                done(err, user)
             })
         })
 

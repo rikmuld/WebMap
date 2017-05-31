@@ -72,18 +72,15 @@ var Setup;
         };
         const handleLogin = (request, accessToken, refreshToken, profile, done) => {
             process.nextTick(() => {
-                const newUser = tables_1.Tables.User.create(tables_1.TableData.User.user(profile.email, profile.name.givenName, profile.name.familyName)); //rather would have this lazy
+                const newUser = tables_1.TableData.User.user(profile.email, profile.displayName, profile._json.image.url); //rather would have this lazy, also img is size 50px, better set to whatever size needed
                 const findUser = { id: profile.email };
-                tableHelper_1.TableHelper.createOrReturn(tables_1.Tables.User, findUser, newUser).then((user) => done(null, user), err => done(null, null));
+                tableHelper_1.TableHelper.createOrReturn(tables_1.Tables.User, findUser, newUser).then(user => done(null, user), err => done(err, null));
             });
         };
         passport.serializeUser((user, done) => done(null, user.id));
         passport.deserializeUser((userId, done) => {
             tables_1.Tables.User.findOne({ id: userId }, (err, user) => {
-                if (err || !user)
-                    done(null, null);
-                else
-                    done(null, user);
+                done(err, user);
             });
         });
         passport.use(new authGoogle.Strategy(googleLogin, handleLogin));

@@ -1,10 +1,12 @@
 namespace SocketIDs {
     export const ON_LOCATION_ADDED = "addLocation"
-    export const LOCATIONS_REQUESTED = "addLocation"
+    export const LOCATIONS_REQUESTED = "getLocations"
 }
 
 namespace Sockets {
     export function addLocation(lat: number, lng: number) {
+        console.log("2")
+
         SocketHandler.socket.emit(SocketIDs.ON_LOCATION_ADDED, lat, lng)
     }
 

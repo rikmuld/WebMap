@@ -4,6 +4,7 @@ const express = require("express");
 const http = require("http");
 const socket = require("socket.io");
 const path = require("path");
+const passport = require("passport");
 const Setup_1 = require("./Setup");
 const Config_1 = require("./Config");
 const socketHandler_1 = require("./sockets/socketHandler");
@@ -20,7 +21,18 @@ Setup_1.Setup.setupSession(app, io);
 Setup_1.Setup.addAuthMiddleware(app);
 Setup_1.Setup.addAsMiddleware(app, "db", db);
 socketHandler_1.SocketHandler.bindHandlers(app, io);
+//put in specific routes file
+const AUTH = "/auth/google";
+const AUTH_CALLBACK = AUTH + "/callback";
+app.get(AUTH, passport.authenticate('google', {
+    scope: ['https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/plus.profile.emails.read']
+}));
+app.get(AUTH_CALLBACK, passport.authenticate('google', {
+    successRedirect: '/',
+    failureRedirect: '/'
+}));
 app.get("*", (req, res) => {
     res.render("map", { user: req.user });
 });
-server.listen(3000);
+//up to here
+Setup_1.Setup.startServer(server);

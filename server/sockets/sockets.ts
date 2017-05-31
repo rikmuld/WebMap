@@ -1,16 +1,22 @@
 import * as express from "express"
 
 import { Tables, TableData } from "../database/tables"
+import { Future } from "../structures/future"
 
 export namespace SocketIDs {
     export const LOCATION_ADDED = "addLocation"
-    export const LOCATIONS_REQUESTED = "addLocation"
+    export const LOCATIONS_REQUESTED = "getLocations"
 }
 
 export namespace Sockets {
     export function addLocation(app: express.Express, socket: SocketIO.Socket) {
         return (lat: number, lng: number) => {
-            Tables.Markers.create(TableData.Location.location(lat, lng))
+            withUser(socket, user => {
+                Future.lift(Tables.Markers.create(TableData.Location.location(lat, lng))).flatMap(marker => {
+                    user.locations.push(marker._id)
+                    return user.save()
+                })
+            })
         }
     }
 
@@ -25,9 +31,13 @@ export namespace Sockets {
         }
     }
 
-    function withUser(socket: SocketIO.Socket, f: (user: TableData.User.User) => void) {
+    function withUser(socket: SocketIO.Socket, f: (user: TableData.User.UserDocument) => void) {
         const passport = socket.request.session.passport
 
-        if (passport && passport.user) f(passport.user)
+        if (passport && passport.user) {
+            Tables.User.findOne({id: passport.user}, (err, fullUser) => { //should not be neccasary but does not seem to deserialize, at least on sockets 
+                if(fullUser) f(fullUser)
+            })
+        }
     }
 }

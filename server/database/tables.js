@@ -34,16 +34,15 @@ var TableData;
         User.ID = "User";
         User.userSchema = new mongoose.Schema({
             id: String,
-            surename: String,
             name: String,
+            icon: String,
             locations: [refrence(Location.ID)]
         });
-        function user(id, name, surename) {
+        function user(id, name, icon) {
             return {
                 id: id,
                 name: name,
-                surename: surename,
-                locations: []
+                icon: icon
             };
         }
         User.user = user;

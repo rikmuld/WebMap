@@ -4,6 +4,7 @@ import * as socket from 'socket.io'
 import * as path from 'path'
 import * as stylus from 'stylus'
 import * as bodyParser from 'body-parser'
+import * as passport from 'passport'
 
 import { Setup } from "./Setup"
 import { Config } from "./Config"
@@ -27,8 +28,22 @@ Setup.addAsMiddleware(app, "db", db)
 
 SocketHandler.bindHandlers(app, io)
 
+//put in specific routes file
+const AUTH = "/auth/google"
+const AUTH_CALLBACK = AUTH + "/callback"
+
+app.get(AUTH, passport.authenticate('google', {
+    scope: ['https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/plus.profile.emails.read']
+}))
+
+app.get(AUTH_CALLBACK, passport.authenticate('google', {
+    successRedirect: '/',
+    failureRedirect: '/'
+}))
+
 app.get("*", (req, res) => {
     res.render("map", { user: req.user })
 })
+//up to here
 
-server.listen(3000)
+Setup.startServer(server)

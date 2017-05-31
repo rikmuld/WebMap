@@ -19,6 +19,7 @@ class AddLocation extends SimpleControl {
     click(div, ev) {
         getPosition(pos => {
             const latlng = toLatlon(pos);
+            console.log("1");
             placeMarker(this.map, latlng);
             Sockets.addLocation(pos.coords.latitude, pos.coords.longitude);
         });
