@@ -45,14 +45,16 @@ export namespace TableData {
             id: String,
             name: String,
             icon: String,
-            locations: [refrence(Location.ID)]
+            locations: [refrence(Location.ID)],
+            subscriptions: [refrence(ID)]
         })
 
         export interface User {
             id: string,
             name: string,
             icon: string,
-            locations?: Location.Location[]
+            locations?: Location.Location[],
+            subscriptions?: User[]
         }
 
         export interface UserDocument extends User, mongoose.Document { }

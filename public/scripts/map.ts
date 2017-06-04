@@ -59,7 +59,7 @@ function initMap() {
     const addLocation = new AddLocation(webMap, google.maps.ControlPosition.RIGHT_BOTTOM, ADD_ICON, locationControl)
 
     locationControl.act()
-    Sockets.getLocations()
+    //Sockets.getLocations()
 
     // var mouseLatLng = webMap.addListener('click', function (e) {
     //     if (toggleButton.checked) {
@@ -82,6 +82,10 @@ function placeMarker(map: google.maps.Map, latlng: google.maps.LatLng): google.m
         position: latlng,
         map: map
     })
+}
+
+function addLocations(locs: Tables.Location[]) {
+    locs.forEach(l => placeMarker(webMap, mkLatLng(l.lat, l.lng)))
 }
 
 function getPosition(callback: (pos: Position) => void, error?: () => void) {

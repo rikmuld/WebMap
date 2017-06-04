@@ -2,6 +2,21 @@
 
 block scripts
     include ../includes/scripts.pug
+    if user
+        script.
+            var user = {
+                id: "#{user.id}",
+                name: "#{user.name}",
+                icon: "#{user.icon}",
+            }
+
+            var subscriptions = `#{user.subscriptions}`
+
+            if(subscriptions.length > 0) {
+                user.subscriptions = JSON.parse(subscriptions)
+            } else {
+                user.subscriptions = []
+            }
 
 block styles
     include ../includes/styles.pug

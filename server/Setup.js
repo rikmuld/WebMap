@@ -67,7 +67,7 @@ var Setup;
         const googleLogin = {
             clientID: googleID,
             clientSecret: googleSecret,
-            callbackURL: "https://" + config_1.Config.auth.callback + "/auth/google/callback",
+            callbackURL: config_1.Config.auth.callback + "/auth/google/callback",
             passReqToCallback: true
         };
         const handleLogin = (request, accessToken, refreshToken, profile, done) => {
@@ -79,9 +79,8 @@ var Setup;
         };
         passport.serializeUser((user, done) => done(null, user.id));
         passport.deserializeUser((userId, done) => {
-            tables_1.Tables.User.findOne({ id: userId }, (err, user) => {
-                done(err, user);
-            });
+            const query = tables_1.Tables.User.findOne({ id: userId }).select("-locations");
+            query.exec().then(user => done(null, user), err => done(err, null));
         });
         passport.use(new authGoogle.Strategy(googleLogin, handleLogin));
     }

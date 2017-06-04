@@ -14,7 +14,7 @@ var Sockets;
     }
     Sockets.getLocations = getLocations;
     function locationsGot(locations) {
-        locations.forEach(l => placeMarker(webMap, mkLatLng(l.lat, l.lng)));
+        locations.forEach(l => addLocations(locations));
     }
     Sockets.locationsGot = locationsGot;
 })(Sockets || (Sockets = {}));

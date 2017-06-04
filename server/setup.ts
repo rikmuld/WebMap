@@ -85,7 +85,7 @@ export namespace Setup {
         const googleLogin = {
             clientID: googleID,
             clientSecret: googleSecret,
-            callbackURL: "https://" + Config.auth.callback + "/auth/google/callback",
+            callbackURL: Config.auth.callback + "/auth/google/callback",
             passReqToCallback: true
         }
 
@@ -100,9 +100,8 @@ export namespace Setup {
 
         passport.serializeUser((user, done) => done(null, user.id))
         passport.deserializeUser((userId, done) => {
-            Tables.User.findOne({ id: userId }, (err, user) => {
-                done(err, user)
-            })
+            const query = Tables.User.findOne({ id: userId }).select("-locations")
+            query.exec().then(user => done(null, user), err => done(err, null))
         })
 
         passport.use(new authGoogle.Strategy(googleLogin, handleLogin))

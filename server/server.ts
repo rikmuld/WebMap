@@ -42,6 +42,8 @@ app.get(AUTH_CALLBACK, passport.authenticate('google', {
 }))
 
 app.get("*", (req, res) => {
+    console.log(req.user)
+
     res.render("map", { user: req.user })
 })
 //up to here

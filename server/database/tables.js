@@ -36,7 +36,8 @@ var TableData;
             id: String,
             name: String,
             icon: String,
-            locations: [refrence(Location.ID)]
+            locations: [refrence(Location.ID)],
+            subscriptions: [refrence(User.ID)]
         });
         function user(id, name, icon) {
             return {

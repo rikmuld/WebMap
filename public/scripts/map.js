@@ -53,7 +53,7 @@ function initMap() {
     const serachbar = new SearchBar(webMap, google.maps.ControlPosition.TOP_LEFT, SEARCH_BOX);
     const addLocation = new AddLocation(webMap, google.maps.ControlPosition.RIGHT_BOTTOM, ADD_ICON, locationControl);
     locationControl.act();
-    Sockets.getLocations();
+    //Sockets.getLocations()
     // var mouseLatLng = webMap.addListener('click', function (e) {
     //     if (toggleButton.checked) {
     //         markerData.push(placeMarker(e.latLng, webMap)),
@@ -72,6 +72,9 @@ function placeMarker(map, latlng) {
         position: latlng,
         map: map
     });
+}
+function addLocations(locs) {
+    locs.forEach(l => placeMarker(webMap, mkLatLng(l.lat, l.lng)));
 }
 function getPosition(callback, error) {
     navigator.geolocation.getCurrentPosition(callback, () => {

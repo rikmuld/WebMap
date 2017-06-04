@@ -13,6 +13,6 @@ namespace Sockets {
     }
 
     export function locationsGot(locations: Tables.Location[]) {
-        locations.forEach(l => placeMarker(webMap, mkLatLng(l.lat, l.lng)))
+        locations.forEach(l => addLocations(locations))
     }
 }
