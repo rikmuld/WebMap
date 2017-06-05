@@ -35,11 +35,11 @@ class AddLocation extends SimpleControl {
     }
 
     click(div: HTMLDivElement, ev?: MouseEvent): any {
-        if(isMobile()) this.mobileClick()
-        else this.desctopClick()
+        //this.mobileClick()
+        this.desctopClick()
     }
 
-    private desctopClick() {
+    private mobileClick() {
         getPosition(pos => {
             const latlng = toLatlon(pos)
 
@@ -48,7 +48,7 @@ class AddLocation extends SimpleControl {
         })
     }
 
-    private mobileClick() {
+    private desctopClick() {
         this.active = !this.active
         
         if(this.active) this.div.classList.add("active") 

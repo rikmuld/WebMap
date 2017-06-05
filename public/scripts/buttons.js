@@ -23,19 +23,17 @@ class AddLocation extends SimpleControl {
         });
     }
     click(div, ev) {
-        if (isMobile())
-            this.mobileClick();
-        else
-            this.desctopClick();
+        //this.mobileClick()
+        this.desctopClick();
     }
-    desctopClick() {
+    mobileClick() {
         getPosition(pos => {
             const latlng = toLatlon(pos);
             this.addLocation(latlng);
             this.map.setCenter(latlng);
         });
     }
-    mobileClick() {
+    desctopClick() {
         this.active = !this.active;
         if (this.active)
             this.div.classList.add("active");
