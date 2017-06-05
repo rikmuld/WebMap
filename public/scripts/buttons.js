@@ -18,7 +18,7 @@ class AddLocation extends SimpleControl {
         map.addListener('click', e => {
             if (this.active) {
                 this.addLocation(e.latLng);
-                this.mobileClick();
+                this.desctopClick();
             }
         });
     }
