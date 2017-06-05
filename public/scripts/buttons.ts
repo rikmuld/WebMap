@@ -22,21 +22,28 @@ class SimpleControl {
 
 class AddLocation extends SimpleControl {
     active: boolean = false
+    main: boolean = false
+    childs: SimpleControl[] = []
 
-    constructor(map: google.maps.Map, position: google.maps.ControlPosition, id: string) {
+    constructor(map: google.maps.Map, position: google.maps.ControlPosition, id: string, main: boolean = true) {
         super(map, position, id)
 
-        map.addListener('click', e => {
-            if (this.active) {
-                this.addLocation(e.latLng)
-                this.desctopClick()
-            }
-        })
+        this.main = main
+
+        if(main) { 
+            map.addListener('click', e => {
+                if (this.active) {
+                    this.addLocation(e.latLng)
+                    this.desctopClick()
+                }
+            })
+            this.childs.push(new AddLocation(map, position, "atCurrent", false))
+        }
     }
 
     click(div: HTMLDivElement, ev?: MouseEvent): any {
-        //this.mobileClick()
-        this.desctopClick()
+        if(!this.main) this.mobileClick()
+        else this.desctopClick()
     }
 
     private mobileClick() {
@@ -45,14 +52,21 @@ class AddLocation extends SimpleControl {
 
             this.addLocation(latlng)
             this.map.setCenter(latlng)
+            addLocation.click(null)
         })
     }
 
     private desctopClick() {
         this.active = !this.active
         
-        if(this.active) this.div.classList.add("active") 
-        else this.div.classList.remove("active") 
+        if(this.active) {
+            this.div.classList.add("active") 
+            this.childs.forEach(child => child.div.classList.add("active"))
+        }
+        else {
+            this.div.classList.remove("active") 
+            this.childs.forEach(child => child.div.classList.remove("active"))
+        } 
     }
 
     private addLocation(pos: google.maps.LatLng){

@@ -73,3 +73,17 @@ input {
 #addIcon.active {
   background-image: url("/icons/plusActive.png");
 }
+#atCurrent {
+  width: 42px;
+  height: 42px;
+  margin-right: calc(10px + 59px / 2 - 42px / 2);
+  margin-bottom: 10px;
+  background-size: cover;
+  background-image: url("/icons/atCurrent.png");
+  border-radius: 50%;
+  cursor: pointer;
+  display: none;
+}
+#atCurrent.active {
+  display: block;
+}

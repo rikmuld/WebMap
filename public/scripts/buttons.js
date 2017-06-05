@@ -12,33 +12,46 @@ class SimpleControl {
     click(div, ev) { }
 }
 class AddLocation extends SimpleControl {
-    constructor(map, position, id) {
+    constructor(map, position, id, main = true) {
         super(map, position, id);
         this.active = false;
-        map.addListener('click', e => {
-            if (this.active) {
-                this.addLocation(e.latLng);
-                this.desctopClick();
-            }
-        });
+        this.main = false;
+        this.childs = [];
+        this.main = main;
+        if (main) {
+            map.addListener('click', e => {
+                if (this.active) {
+                    this.addLocation(e.latLng);
+                    this.desctopClick();
+                }
+            });
+            this.childs.push(new AddLocation(map, position, "atCurrent", false));
+        }
     }
     click(div, ev) {
-        //this.mobileClick()
-        this.desctopClick();
+        if (!this.main)
+            this.mobileClick();
+        else
+            this.desctopClick();
     }
     mobileClick() {
         getPosition(pos => {
             const latlng = toLatlon(pos);
             this.addLocation(latlng);
             this.map.setCenter(latlng);
+            addLocation.click(null);
         });
     }
     desctopClick() {
         this.active = !this.active;
-        if (this.active)
+        if (this.active) {
             this.div.classList.add("active");
-        else
+            this.childs.forEach(child => child.div.classList.add("active"));
+        }
+        else {
             this.div.classList.remove("active");
+            this.childs.forEach(child => child.div.classList.remove("active"));
+        }
     }
     addLocation(pos) {
         placeMarker(this.map, pos);
