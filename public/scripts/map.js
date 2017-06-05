@@ -77,7 +77,9 @@ function addLocations(locs) {
     locs.forEach(l => placeMarker(webMap, mkLatLng(l.lat, l.lng)));
 }
 function getPosition(callback, error) {
+    alert("Trying to get geolocation");
     navigator.geolocation.getCurrentPosition(callback, () => {
         console.log("Geolocation is not available!");
+        alert("Geolocation is not available");
     });
 }

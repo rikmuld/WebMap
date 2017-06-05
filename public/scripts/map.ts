@@ -89,7 +89,10 @@ function addLocations(locs: Tables.Location[]) {
 }
 
 function getPosition(callback: (pos: Position) => void, error?: () => void) {
+    alert("Trying to get geolocation")
+
     navigator.geolocation.getCurrentPosition(callback, () => {
         console.log("Geolocation is not available!")
+        alert("Geolocation is not available")
     })
 }
