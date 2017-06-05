@@ -12,17 +12,39 @@ class SimpleControl {
     click(div, ev) { }
 }
 class AddLocation extends SimpleControl {
-    constructor(map, position, id, loc) {
+    constructor(map, position, id) {
         super(map, position, id);
-        this.location = loc;
+        this.active = false;
+        map.addListener('click', e => {
+            if (this.active) {
+                this.addLocation(e.latLng);
+                this.mobileClick();
+            }
+        });
     }
     click(div, ev) {
+        if (isMobile())
+            this.mobileClick();
+        else
+            this.desctopClick();
+    }
+    desctopClick() {
         getPosition(pos => {
             const latlng = toLatlon(pos);
-            placeMarker(this.map, latlng);
-            Sockets.addLocation(pos.coords.latitude, pos.coords.longitude);
+            this.addLocation(latlng);
+            this.map.setCenter(latlng);
         });
-        this.location.act();
+    }
+    mobileClick() {
+        this.active = !this.active;
+        if (this.active)
+            this.div.classList.add("active");
+        else
+            this.div.classList.remove("active");
+    }
+    addLocation(pos) {
+        placeMarker(this.map, pos);
+        Sockets.addLocation(pos.lat(), pos.lng());
     }
 }
 class LocationControl extends SimpleControl {
@@ -33,10 +55,7 @@ class LocationControl extends SimpleControl {
         this.div.appendChild(img);
     }
     act() {
-        this.div.firstElementChild.classList.remove("error");
-        getPosition(position => this.map.setCenter(toLatlon(position)), () => {
-            this.div.firstElementChild.classList.add("error");
-        });
+        getPosition(position => this.map.setCenter(toLatlon(position)));
     }
     click(div, ev) {
         this.act();

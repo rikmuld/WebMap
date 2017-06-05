@@ -70,3 +70,6 @@ input {
   border-radius: 50%;
   cursor: pointer;
 }
+#addIcon.active {
+  background-image: url("/icons/plusActive.png");
+}

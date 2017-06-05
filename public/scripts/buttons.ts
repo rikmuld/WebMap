@@ -21,22 +21,43 @@ class SimpleControl {
 }
 
 class AddLocation extends SimpleControl {
-    location: LocationControl
+    active: boolean = false
 
-    constructor(map: google.maps.Map, position: google.maps.ControlPosition, id: string, loc: LocationControl) {
+    constructor(map: google.maps.Map, position: google.maps.ControlPosition, id: string) {
         super(map, position, id)
-        this.location = loc
+
+        map.addListener('click', e => {
+            if (this.active) {
+                this.addLocation(e.latLng)
+                this.mobileClick()
+            }
+        })
     }
 
     click(div: HTMLDivElement, ev?: MouseEvent): any {
+        if(isMobile()) this.mobileClick()
+        else this.desctopClick()
+    }
+
+    private desctopClick() {
         getPosition(pos => {
             const latlng = toLatlon(pos)
 
-            placeMarker(this.map, latlng)
-            Sockets.addLocation(pos.coords.latitude, pos.coords.longitude)
+            this.addLocation(latlng)
+            this.map.setCenter(latlng)
         })
+    }
 
-        this.location.act()
+    private mobileClick() {
+        this.active = !this.active
+        
+        if(this.active) this.div.classList.add("active") 
+        else this.div.classList.remove("active") 
+    }
+
+    private addLocation(pos: google.maps.LatLng){
+        placeMarker(this.map, pos)
+        Sockets.addLocation(pos.lat(), pos.lng())
     }
 }
 
@@ -51,10 +72,7 @@ class LocationControl extends SimpleControl {
     }
 
     act() {
-        this.div.firstElementChild.classList.remove("error")
-        getPosition(position => this.map.setCenter(toLatlon(position)), () => {
-            this.div.firstElementChild.classList.add("error")
-        })
+        getPosition(position => this.map.setCenter(toLatlon(position)))
     }
 
     click(div: HTMLDivElement, ev?: MouseEvent): any {

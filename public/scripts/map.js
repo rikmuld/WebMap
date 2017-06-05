@@ -52,9 +52,9 @@ function initMap() {
         mapTypeControl: false,
         overviewMapControl: false
     });
-    const locationControl = new LocationControl(webMap, google.maps.ControlPosition.LEFT_TOP, LOCATION_BOX);
-    const serachbar = new SearchBar(webMap, google.maps.ControlPosition.TOP_LEFT, SEARCH_BOX);
-    const addLocation = new AddLocation(webMap, google.maps.ControlPosition.RIGHT_BOTTOM, ADD_ICON, locationControl);
+    locationControl = new LocationControl(webMap, google.maps.ControlPosition.LEFT_TOP, LOCATION_BOX);
+    serachbar = new SearchBar(webMap, google.maps.ControlPosition.TOP_LEFT, SEARCH_BOX);
+    addLocation = new AddLocation(webMap, google.maps.ControlPosition.RIGHT_BOTTOM, ADD_ICON);
     locationControl.act();
     Sockets.getLocations();
     // var mouseLatLng = webMap.addListener('click', function (e) {
@@ -80,8 +80,11 @@ function addLocations(locs) {
     locs.forEach(l => placeMarker(webMap, mkLatLng(l.lat, l.lng)));
 }
 function getPosition(callback, error) {
-    navigator.geolocation.getCurrentPosition(callback, () => {
-        console.log("Geolocation is not available!");
+    navigator.geolocation.getCurrentPosition(pos => {
+        locationControl.error(false);
+        callback(pos);
+    }, () => {
         locationControl.error(true);
+        console.log("Geolocation is not available!");
     });
 }
