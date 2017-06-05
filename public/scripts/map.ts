@@ -32,6 +32,9 @@ const STYLE = [
 ]
 
 let webMap: google.maps.Map
+let locationControl: LocationControl
+let serachbar: SearchBar
+let addLocation: AddLocation
 
 function initMap() {
     const UTWENTE = new google.maps.LatLng(52.241033, 6.852413)
@@ -59,7 +62,7 @@ function initMap() {
     const addLocation = new AddLocation(webMap, google.maps.ControlPosition.RIGHT_BOTTOM, ADD_ICON, locationControl)
 
     locationControl.act()
-    //Sockets.getLocations()
+    Sockets.getLocations()
 
     // var mouseLatLng = webMap.addListener('click', function (e) {
     //     if (toggleButton.checked) {
@@ -89,10 +92,8 @@ function addLocations(locs: Tables.Location[]) {
 }
 
 function getPosition(callback: (pos: Position) => void, error?: () => void) {
-    alert("Trying to get geolocation")
-
     navigator.geolocation.getCurrentPosition(callback, () => {
         console.log("Geolocation is not available!")
-        alert("Geolocation is not available")
+        locationControl.error(true)
     })
 }

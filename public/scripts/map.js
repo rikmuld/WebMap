@@ -30,6 +30,9 @@ const STYLE = [
     }
 ];
 let webMap;
+let locationControl;
+let serachbar;
+let addLocation;
 function initMap() {
     const UTWENTE = new google.maps.LatLng(52.241033, 6.852413);
     const TOKYO = new google.maps.LatLng(35.652832, 139.839478);
@@ -53,7 +56,7 @@ function initMap() {
     const serachbar = new SearchBar(webMap, google.maps.ControlPosition.TOP_LEFT, SEARCH_BOX);
     const addLocation = new AddLocation(webMap, google.maps.ControlPosition.RIGHT_BOTTOM, ADD_ICON, locationControl);
     locationControl.act();
-    //Sockets.getLocations()
+    Sockets.getLocations();
     // var mouseLatLng = webMap.addListener('click', function (e) {
     //     if (toggleButton.checked) {
     //         markerData.push(placeMarker(e.latLng, webMap)),
@@ -77,9 +80,8 @@ function addLocations(locs) {
     locs.forEach(l => placeMarker(webMap, mkLatLng(l.lat, l.lng)));
 }
 function getPosition(callback, error) {
-    alert("Trying to get geolocation");
     navigator.geolocation.getCurrentPosition(callback, () => {
         console.log("Geolocation is not available!");
-        alert("Geolocation is not available");
+        locationControl.error(true);
     });
 }
