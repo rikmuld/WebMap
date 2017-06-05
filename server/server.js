@@ -32,7 +32,6 @@ app.get(AUTH_CALLBACK, passport.authenticate('google', {
     failureRedirect: '/'
 }));
 app.get("*", (req, res) => {
-    console.log(req.user);
     res.render("map", { user: req.user });
 });
 //up to here

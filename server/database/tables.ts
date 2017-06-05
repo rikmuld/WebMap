@@ -53,8 +53,8 @@ export namespace TableData {
             id: string,
             name: string,
             icon: string,
-            locations?: Location.Location[],
-            subscriptions?: User[]
+            locations?: string[],
+            subscriptions?: string[]
         }
 
         export interface UserDocument extends User, mongoose.Document { }

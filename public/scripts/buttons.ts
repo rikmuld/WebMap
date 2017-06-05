@@ -102,6 +102,8 @@ class LocationControl extends SimpleControl {
 class SearchBar extends SimpleControl {
     search: google.maps.places.SearchBox
     markers: google.maps.Marker[] = []
+    dosearch: number = 0 
+    users: Tables.User[] = []
 
     constructor(map: google.maps.Map, position: google.maps.ControlPosition, id: string) {
         super(map, position, id)
@@ -114,11 +116,95 @@ class SearchBar extends SimpleControl {
 
         const instance: SearchBar = this
 
+        input.addEventListener('input', (e) => instance.searchChanged(e))
+
         map.addListener('bounds_changed', () => instance.search.setBounds(map.getBounds()))
-        this.search.addListener('places_changed', () => instance.searchChanged())
+        this.search.addListener('places_changed', () => instance.locationChanged())
+
+        SearchBar.getPacContainer().addClass("hidden")
     }
 
-    searchChanged() {
+    searchChanged(e: Event) {
+        this.dosearch += 1
+
+        this.checkOpenClose()
+        setTimeout(() => {
+            this.dosearch -= 1
+            if(this.dosearch == 0) this.findUsers(this.div.firstChild as HTMLInputElement)
+        }, 120)
+    }
+
+    checkOpenClose(tries: number = 4){
+        const container = SearchBar.getPacContainer()
+        const instance = this
+
+        if(container.children().length == 0) container.addClass("hidden")
+        else container.removeClass("hidden")
+        
+        if(tries > 0) {
+            setTimeout(() => instance.checkOpenClose(tries - 1), 25)
+        }
+    }
+
+    findUsers(input: HTMLInputElement) {
+        if(input.value.length == 0) this.updateUsers([])
+        else Sockets.findUsers(input.value, 3)
+    }
+
+    updateUsers(users: Tables.User[]) {
+        this.cleanUsers()
+        this.users = users
+        this.users.forEach(user => {
+            const pac = SearchBar.generatePacUserItem(user)
+            SearchBar.getPacContainer().prepend(pac)
+        })
+        this.checkOpenClose()
+    }
+
+    cleanUsers() {
+        this.users = []
+        $(".pac-user-item").remove()
+    }
+
+    static getPacContainer():any {
+        return $(".pac-container")
+    }
+
+    static generatePacUserItem(user: Tables.User): HTMLDivElement {
+        const el = document.createElement("div")
+        el.classList.add("pac-item")
+        el.classList.add("pac-user-item")
+
+        const email = document.createElement("span")
+        email.innerText = user.id
+
+        const name = document.createElement("span")
+        name.innerText = user.name
+        name.classList.add("pac-item-query")
+
+        const icon = document.createElement("span")
+        icon.classList.add("pac-icon")
+        icon.classList.add("pac-icon-user")     
+
+        el.addEventListener("click", () => {
+            //if no subscription
+            Sockets.manageSubscription(user._id, true)
+            console.log(user)
+            //also color user icon and request locations for it etc...
+            //hide search thingy
+
+            //if subscription
+            //only show nodes of the user
+        })
+
+        el.appendChild(icon)
+        el.appendChild(name)
+        el.appendChild(email)   
+
+        return el
+    }
+
+    locationChanged() {
         const instance = this
         const places = this.search.getPlaces();
 

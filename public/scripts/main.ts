@@ -1,4 +1,5 @@
 declare const user: Tables.User
+declare const $
 
 SocketHandler.init()
 

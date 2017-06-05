@@ -42,7 +42,7 @@ function initMap() {
 
     webMap = new google.maps.Map(document.getElementById(MAP), {
         center: TOKYO,
-        zoom: 12,
+        zoom: 16,
         zoomControl: true,
         zoomControlOptions: {
             position: google.maps.ControlPosition.TOP_LEFT
@@ -63,13 +63,6 @@ function initMap() {
 
     locationControl.act()
     Sockets.getLocations()
-
-    // var mouseLatLng = webMap.addListener('click', function (e) {
-    //     if (toggleButton.checked) {
-    //         markerData.push(placeMarker(e.latLng, webMap)),
-    //             console.log(markerData)
-    //     }
-    // })
 }
 
 function toLatlon(pos: Position): google.maps.LatLng {
@@ -91,12 +84,16 @@ function addLocations(locs: Tables.Location[]) {
     locs.forEach(l => placeMarker(webMap, mkLatLng(l.lat, l.lng)))
 }
 
+function geoError() {
+    locationControl.error(true)
+    console.log("Geolocation is not available!")
+}
+
 function getPosition(callback: (pos: Position) => void, error?: () => void) {
-    navigator.geolocation.getCurrentPosition(pos => {
-        locationControl.error(false)
-        callback(pos)
-    }, () => {
-        locationControl.error(true)
-        console.log("Geolocation is not available!")
-    })
+    if(navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(pos => {
+            locationControl.error(false)
+            callback(pos)
+        }, geoError)
+    } else geoError()
 }
