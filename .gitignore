@@ -3,3 +3,5 @@ node_modules/xmlhttprequest-ssl/tests/test-events.js
 node_modules/
 
 .vscode/launch.json
+.vscode/settings.json
+server/config.*

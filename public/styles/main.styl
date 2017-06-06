@@ -1,6 +1,9 @@
 html, body
     margin 0
 
+div, input
+    box-sizing border-box
+
 #map 
     height 100%
     width 100%
@@ -52,93 +55,42 @@ html, body
         padding 10px
         font-size 15px
         font-family: Arial, Helvetica, sans-serif
-        border-radius: inherit    
+        border-radius: inherit
+
+addIconSize = 59px
+
+#addIcon
+    margin-right 10px
+    margin-bottom 10px
+    width addIconSize
+    height addIconSize
+    background-size cover
+    background-image url('/icons/plus.png')
+    border-radius 50%
+    cursor pointer
+
+#addIcon.active
+    background-image url('/icons/plusActive.png')
+
+#atCurrent
+    width 42px
+    height @width
+    margin-right "calc(10px + %s / 2 - %s / 2)" % (addIconSize @width)
+    margin-bottom 10px
+    background-size cover
+    background-image url('/icons/atCurrent.png')
+    border-radius 50%
+    cursor pointer
+    display none
+
+#atCurrent.active
+    display block
 
 .pac-container
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important
+    display block !important
 
-.switch 
-  position: relative;
-  display: inline-block;
-  width: 60px;
-  height: 34px;
+.pac-container.hidden
+    display none !important
 
-.slider 
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  -webkit-transition: .4s;
-  transition: .4s;
-
-.slider:before 
-  position: absolute;
-  content: "";
-  height: 26px;
-  width: 26px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
-
-input:checked + .slider {
-  background-color: #2196F3;
-}
-
-input:focus + .slider {
-  box-shadow: 0 0 1px #2196F3;
-}
-
-input:checked + .slider:before {
-  -webkit-transform: translateX(26px);
-  -ms-transform: translateX(26px);
-  transform: translateX(26px);
-}
-
-
-
-.slider.round {
-  border-radius: 34px;
-}
-
-.slider.round:before {
-  border-radius: 50%;
-}
-
-
-
-#leftbox
-    float left
-    height 600px
-    width 180px
-    background-color white
-    opacity 0.8
-    margin 50px
-
-div, input
-    box-sizing border-box
-
-#rightbox
-    float right
-    height 600px
-    width 180px
-    background-color white
-    opacity 0.8
-    margin 50px
-
-#togglebutton
-    position: fixed
-    margin: 25px
-    bottom: 0
-    right: 0
-    
-
-@media (max-width: 600px)
-    .wrapper
-        display none
-
-    
+.pac-user-item
+    cursor pointer

@@ -2,6 +2,19 @@
 
 block scripts
     include ../includes/scripts.pug
+    if user
+        script.
+            var user = {
+                _id: "#{user._id}",
+                id: "#{user.id}",
+                name: "#{user.name}",
+                icon: "#{user.icon}",
+                subscriptions: []
+            }
+
+        each subscription in user.subscriptions
+            script.
+                user.subscriptions.push('#{subscription}')
 
 block styles
     include ../includes/styles.pug

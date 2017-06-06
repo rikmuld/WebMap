@@ -1,9 +1,8 @@
-//save location functionality: desktop 
-// get longitude and latitude from mouse position on click
-// place marker at longitude and latitude
+declare const user: Tables.User
+declare const $
 
-// save location functionality: mobile
-// get user longitude and latitude from geolocation data 
-// place marker at longitude and latitude
+SocketHandler.init()
 
-console.log("non empty file now :)")
+function isMobile(): boolean {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+}
