@@ -96,3 +96,8 @@ input {
 .pac-user-item {
   cursor: pointer;
 }
+.yAlign {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}
