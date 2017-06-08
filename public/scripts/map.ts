@@ -64,7 +64,9 @@ function initMap() {
     const logout = new Logout(webMap, google.maps.ControlPosition.RIGHT_TOP)
 
     locationControl.act()
+    
     Sockets.getLocations()
+    user.subscriptions.forEach(s => Sockets.getLocationsFor(s))
 }
 
 function toLatlon(pos: Position): google.maps.LatLng {
@@ -80,6 +82,16 @@ function placeMarker(map: google.maps.Map, latlng: google.maps.LatLng): google.m
         position: latlng,
         map: map
     })
+}
+
+function createMarker(latlng: google.maps.LatLng): google.maps.Marker {
+    return new google.maps.Marker({
+        position: latlng
+    })
+}
+
+function createMarkers(locs: Tables.Location[]): google.maps.Marker[] {
+    return locs.map(l => createMarker(mkLatLng(l.lat, l.lng)))
 }
 
 function addLocations(locs: Tables.Location[]) {

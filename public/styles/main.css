@@ -1,3 +1,12 @@
+.noselect,
+.user {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
 html,
 body {
   margin: 0;
@@ -87,13 +96,11 @@ input {
 #atCurrent.active {
   display: block;
 }
-.pac-container {
+.pac-container.show {
   display: block !important;
 }
-.pac-container.hidden {
-  display: none !important;
-}
-.pac-user-item {
+.pac-user-item,
+.pac-item {
   cursor: pointer;
 }
 .yAlign {
@@ -104,11 +111,30 @@ input {
 #userLogout {
   margin-right: 10px;
   margin-top: 10px;
+}
+.subscription {
+  margin-left: 10px;
+}
+.subscription .fade {
+  background-color: transparent;
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  border-radius: 50%;
+}
+.subscription.hidden .fade {
+  background-color: rgba(0,0,0,0.5);
+}
+.user {
   border-radius: 50%;
   background-color: #fff;
   width: 50px;
   height: 50px;
+  cursor: pointer;
+  margin-bottom: 10px;
 }
-#userLogout img {
+.user img {
   border-radius: 50%;
 }

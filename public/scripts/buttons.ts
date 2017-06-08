@@ -108,6 +108,50 @@ class Logout extends SimpleControl {
 
         this.el.setAttribute("href", "/logout")
         this.el.appendChild(img)
+        this.el.classList.add("user")
+    }
+}
+
+class SubscriptionIcon extends SimpleControl {
+    user: Tables.UserPopulated
+    markers: google.maps.Marker[]
+    hidden: boolean = false
+
+    constructor(map: google.maps.Map, user: Tables.UserPopulated) {
+        super(map, google.maps.ControlPosition.LEFT_CENTER, user._id)
+
+        this.user = user
+
+        const img = document.createElement('img')
+        img.src = user.icon
+
+        const fade = document.createElement('div')
+        fade.classList.add("fade")
+
+        this.el.appendChild(img)
+        this.el.appendChild(fade)
+        this.el.classList.add("user")
+        this.el.classList.add("subscription")
+
+        this.markers = createMarkers(user.locations)
+        this.show()
+    }
+
+    show() {
+        this.hidden = false
+        this.markers.forEach(m => m.setMap(this.map))
+        this.el.classList.remove("hidden")
+    }
+
+    hide() {
+        this.hidden = true
+        this.markers.forEach(m => m.setMap(null))
+        this.el.classList.add("hidden")
+    }
+
+    click() {
+        if(this.hidden) this.show()
+        else this.hide()
     }
 }
 
@@ -129,35 +173,34 @@ class SearchBar extends SimpleControl {
         const instance: SearchBar = this
 
         input.addEventListener('input', (e) => instance.searchChanged(e))
+        input.addEventListener('focus', e => {
+            if(instance.users.length > 0) instance.getPacContainer().addClass("show")
+        })
+        input.addEventListener('blur', e => {
+            setTimeout(() => instance.getPacContainer().removeClass("show"), 100)
+        })
 
         map.addListener('bounds_changed', () => instance.search.setBounds(map.getBounds()))
         this.search.addListener('places_changed', () => instance.locationChanged())
+
+        google.maps.event.addDomListener(this.search, 'keydown', (e:KeyboardEvent) => {
+            if(e.keyCode != 65) e.preventDefault()
+        })
     }
 
     searchChanged(e: Event) {
         this.dosearch += 1
 
-        this.checkOpenClose()
         setTimeout(() => {
             this.dosearch -= 1
-            if(this.dosearch == 0) this.findUsers(this.el.firstChild as HTMLInputElement)
+            if(this.dosearch == 0) this.findUsers(this.el.firstChild as HTMLInputElement, true)
         }, 120)
     }
 
-    checkOpenClose(tries: number = 4){
-        const container = SearchBar.getPacContainer()
-        const instance = this
 
-        if(container.children().length == 0) container.addClass("hidden")
-        else container.removeClass("hidden")
-        
-        if(tries > 0) {
-            setTimeout(() => instance.checkOpenClose(tries - 1), 25)
-        }
-    }
-
-    findUsers(input: HTMLInputElement) {
+    findUsers(input: HTMLInputElement, subscriptions: boolean) {
         if(input.value.length == 0) this.updateUsers([])
+        else if(subscriptions) Sockets.findUsers(input.value, 3) //change to only search in subscriptions
         else Sockets.findUsers(input.value, 3)
     }
 
@@ -165,10 +208,11 @@ class SearchBar extends SimpleControl {
         this.cleanUsers()
         this.users = users
         this.users.forEach(user => {
-            const pac = SearchBar.generatePacUserItem(user)
-            SearchBar.getPacContainer().prepend(pac)
+            const pac = this.generatePacUserItem(user)
+            this.getPacContainer().prepend(pac)
         })
-        this.checkOpenClose()
+        if(this.users.length > 0) this.getPacContainer().addClass("show")
+        else this.getPacContainer().removeClass("show")
     }
 
     cleanUsers() {
@@ -176,11 +220,11 @@ class SearchBar extends SimpleControl {
         $(".pac-user-item").remove()
     }
 
-    static getPacContainer():any {
+    getPacContainer():any {
         return $(".pac-container")
     }
 
-    static generatePacUserItem(user: Tables.User): HTMLDivElement {
+    generatePacUserItem(user: Tables.User): HTMLDivElement {
         const el = document.createElement("div")
         el.classList.add("pac-item")
         el.classList.add("pac-user-item")
@@ -196,15 +240,16 @@ class SearchBar extends SimpleControl {
         icon.classList.add("pac-icon")
         icon.classList.add("pac-icon-user")     
 
-        el.addEventListener("click", () => {
-            //if no subscription
-            Sockets.manageSubscription(user._id, true)
-            console.log(user)
-            //also color user icon and request locations for it etc...
-            //hide search thingy
+        $(el).click(() => {
+            const input = this.el.firstElementChild as HTMLInputElement
 
-            //if subscription
-            //only show nodes of the user
+            input.value = user.id
+            $(input).focus()
+            $(input).blur()
+
+            this.updateUsers([])
+
+            //set subscription user to state active
         })
 
         el.appendChild(icon)
@@ -217,6 +262,8 @@ class SearchBar extends SimpleControl {
     locationChanged() {
         const instance = this
         const places = this.search.getPlaces();
+
+        this.searchChanged(null)
 
         this.markers.forEach(marker => marker.setMap(null))
         this.markers = []

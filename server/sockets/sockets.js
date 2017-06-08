@@ -18,14 +18,14 @@ var Sockets;
     }
     Sockets.addLocation = addLocation;
     function getLocations(app, socket) {
-        return () => {
-            withUser(socket, user => {
-                tables_1.Tables.Markers.find({ _id: user.locations }, (err, locations) => {
-                    if (err)
-                        console.log(err);
-                    else
-                        socket.emit(socketHandler_1.SocketIDs.LOCATIONS_REQUESTED, locations.map(l => tables_1.TableData.Location.location(l.lat, l.lng)));
-                });
+        return (user) => {
+            tables_1.Tables.User.findOne({ _id: user }).populate('locations').exec((err, fullUser) => {
+                if (err)
+                    console.log(err);
+                else if (fullUser)
+                    socket.emit(socketHandler_1.SocketIDs.LOCATIONS_REQUESTED, fullUser);
+                else
+                    console.log("Could not get user!");
             });
         };
     }

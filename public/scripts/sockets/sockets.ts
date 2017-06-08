@@ -11,8 +11,8 @@ namespace Sockets {
         SocketHandler.socket.emit(SocketIDs.LOCATIONS_REQUESTED, user)
     }
 
-    export function locationsGot(locations: Tables.Location[]) {
-        locations.forEach(l => addLocations(locations))
+    export function locationsGot(fullUser: Tables.UserPopulated) {
+        Subscriptions.setupSubscription(fullUser)
     }
 
     export function findUsers(query: string, count: number) {

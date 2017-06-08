@@ -12,8 +12,8 @@ var Sockets;
         SocketHandler.socket.emit(SocketIDs.LOCATIONS_REQUESTED, user);
     }
     Sockets.getLocationsFor = getLocationsFor;
-    function locationsGot(locations) {
-        locations.forEach(l => addLocations(locations));
+    function locationsGot(fullUser) {
+        Subscriptions.setupSubscription(fullUser);
     }
     Sockets.locationsGot = locationsGot;
     function findUsers(query, count) {

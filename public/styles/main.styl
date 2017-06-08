@@ -1,3 +1,11 @@
+.noselect
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
 html, body
     margin 0
 
@@ -86,13 +94,10 @@ addIconSize = 59px
 #atCurrent.active
     display block
 
-.pac-container
+.pac-container.show
     display block !important
 
-.pac-container.hidden
-    display none !important
-
-.pac-user-item
+.pac-user-item, .pac-item
     cursor pointer
 
 .yAlign
@@ -103,10 +108,30 @@ addIconSize = 59px
 #userLogout
     margin-right 10px
     margin-top 10px
+
+.subscription
+    margin-left 10px
+    .fade
+        background-color transparent
+        width 50px
+        height 50px
+        position absolute
+        top 0px
+        left 0px
+        border-radius 50%
+
+.subscription.hidden
+    .fade
+        background-color rgba(0, 0, 0, 0.5)
+
+.user
+    @extends .noselect
     border-radius 50%
     background-color white
     width 50px
     height 50px
+    cursor pointer
+    margin-bottom 10px
 
     img
         border-radius 50%
