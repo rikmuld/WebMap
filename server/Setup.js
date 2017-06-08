@@ -44,7 +44,7 @@ var Setup;
                 host: 'localhost',
                 port: 6379,
                 client: redisClient,
-                ttl: 86400
+                ttl: 7 * 24 * 3600
             });
         }
         const sessionMiddle = session(sessionData);
@@ -75,7 +75,6 @@ var Setup;
                 const icon = profile._json.image.isDefault ? null : profile._json.image.url;
                 const newUser = tables_1.TableData.User.user(profile.email, profile.displayName, icon); //rather would have this lazy, also img is size 50px, better set to whatever size needed
                 const findUser = { id: profile.email };
-                console.log(profile);
                 tableHelper_1.TableHelper.createOrReturn(tables_1.Tables.User, findUser, newUser).then(user => done(null, user), err => done(err, null));
             });
         };

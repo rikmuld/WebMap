@@ -201,6 +201,8 @@ class SearchBar extends SimpleControl {
             $(input).blur();
             this.updateUsers([]);
             //set subscription user to state active
+            //however for now:
+            Sockets.manageSubscription(user._id, true);
         });
         el.appendChild(icon);
         el.appendChild(name);

@@ -250,6 +250,8 @@ class SearchBar extends SimpleControl {
             this.updateUsers([])
 
             //set subscription user to state active
+            //however for now:
+            Sockets.manageSubscription(user._id, true)
         })
 
         el.appendChild(icon)

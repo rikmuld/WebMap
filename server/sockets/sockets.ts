@@ -49,11 +49,12 @@ export namespace Sockets {
                 } else {
                     const index = user.subscriptions.indexOf(to)
                     if(index == -1) {
-                        Tables.User.findOne({_id: to}, (err, newUser) => {
+                        Tables.User.findOne({_id: to}).populate('locations').exec((err, newUser) => {
                             if(err) console.log(err)
                             else {
                                 user.subscriptions.push(newUser._id)
                                 user.save()
+                                socket.emit(SocketIDs.LOCATIONS_REQUESTED, newUser)
                             }
                         })
                     }
