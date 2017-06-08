@@ -10,6 +10,6 @@ namespace Tables {
         id: string,
         name: string,
         icon: string,
-        subsciptions: string[],
+        subscriptions: string[],
     }
 }

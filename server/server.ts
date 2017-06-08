@@ -41,6 +41,11 @@ app.get(AUTH_CALLBACK, passport.authenticate('google', {
     failureRedirect: '/'
 }))
 
+app.get("/logout", (req, res) => {
+    req.logout()
+    res.redirect("/")
+})
+
 app.get("*", (req, res) => {
     res.render("map", { user: req.user })
 })

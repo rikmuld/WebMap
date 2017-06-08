@@ -1,20 +1,20 @@
 class SimpleControl {
-    div: HTMLDivElement
+    el: HTMLElement
     map: google.maps.Map
 
-    constructor(map: google.maps.Map, position: google.maps.ControlPosition, id: string) {
+    constructor(map: google.maps.Map, position: google.maps.ControlPosition, id: string, mainElement: string = "div") {
         const instance = this
 
         this.map = map
 
-        this.div = document.createElement('div')
-        this.div.id = id
+        this.el = document.createElement(mainElement)
+        this.el.id = id
 
-        this.div.addEventListener<"click">("click", function (this: HTMLDivElement, event: MouseEvent) {
+        this.el.addEventListener<"click">("click", function (this: HTMLDivElement, event: MouseEvent) {
             instance.click(this, event)
         })
 
-        this.map.controls[position].push(this.div)
+        this.map.controls[position].push(this.el)
     }
 
     click(div: HTMLDivElement, ev: MouseEvent) { }
@@ -60,12 +60,12 @@ class AddLocation extends SimpleControl {
         this.active = !this.active
         
         if(this.active) {
-            this.div.classList.add("active") 
-            this.childs.forEach(child => child.div.classList.add("active"))
+            this.el.classList.add("active") 
+            this.childs.forEach(child => child.el.classList.add("active"))
         }
         else {
-            this.div.classList.remove("active") 
-            this.childs.forEach(child => child.div.classList.remove("active"))
+            this.el.classList.remove("active") 
+            this.childs.forEach(child => child.el.classList.remove("active"))
         } 
     }
 
@@ -82,7 +82,7 @@ class LocationControl extends SimpleControl {
         const img = document.createElement('img')
         img.src = "/icons/location.png"
 
-        this.div.appendChild(img)
+        this.el.appendChild(img)
     }
 
     act() {
@@ -94,8 +94,20 @@ class LocationControl extends SimpleControl {
     }
 
     error(error: boolean) {
-        if (error) this.div.firstElementChild.classList.add("error")
-        else this.div.firstElementChild.classList.remove("error")
+        if (error) this.el.firstElementChild.classList.add("error")
+        else this.el.firstElementChild.classList.remove("error")
+    }
+}
+
+class Logout extends SimpleControl {
+    constructor(map: google.maps.Map, position: google.maps.ControlPosition) {
+        super(map, position, 'userLogout', 'a')
+
+        const img = document.createElement('img')
+        img.src = user.icon
+
+        this.el.setAttribute("href", "/logout")
+        this.el.appendChild(img)
     }
 }
 
@@ -111,7 +123,7 @@ class SearchBar extends SimpleControl {
         const input = document.createElement('input')
         input.placeholder = "Search for places, markers, users, tags..."
 
-        this.div.appendChild(input)
+        this.el.appendChild(input)
         this.search = new google.maps.places.SearchBox(input)
 
         const instance: SearchBar = this
@@ -120,8 +132,6 @@ class SearchBar extends SimpleControl {
 
         map.addListener('bounds_changed', () => instance.search.setBounds(map.getBounds()))
         this.search.addListener('places_changed', () => instance.locationChanged())
-
-        SearchBar.getPacContainer().addClass("hidden")
     }
 
     searchChanged(e: Event) {
@@ -130,7 +140,7 @@ class SearchBar extends SimpleControl {
         this.checkOpenClose()
         setTimeout(() => {
             this.dosearch -= 1
-            if(this.dosearch == 0) this.findUsers(this.div.firstChild as HTMLInputElement)
+            if(this.dosearch == 0) this.findUsers(this.el.firstChild as HTMLInputElement)
         }, 120)
     }
 
