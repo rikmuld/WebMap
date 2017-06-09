@@ -2,7 +2,7 @@
   "name": "web-map",
   "version": "0.0.1",
   "description": "WebMap",
-  "main": "server.js",
+  "main": "server/server.js",
   "author": {
     "name": "Rik",
     "email": "rikmuld@gmail.com"
@@ -21,6 +21,7 @@
     "pug": "^2.0.0-rc.1",
     "redis": "^2.6.2",
     "socket.io": "^1.5.0",
-    "stylus": "^0.54.5"
+    "stylus": "^0.54.5",
+    "typescript": "^2.3.4"
   }
 }

@@ -2,12 +2,25 @@
 
 block body
 	if !user
-		#userlogin
-			a(href="/auth/google") Login
+		.container
+			.row
+				.col-lg-6.col-sm-12
+					img#logo(src="icons/logo_255.png")
+				.col-lg-6.col-sm-12
+					.col-sm-12
+						.h1.text-lg-center.text-sm-center WebMap
+
+					.col-sm-12
+						a.login(href="/auth/google")
+								span.googleicon(rc="icons/googlelogo.svg")
+								p#buttontext Sign in with google
+
+		link(rel='stylesheet' href='styles/login.css' type='text/css')
 	else
 		#map
 
 block append scripts
-	script(src="scripts/buttons.js")
-	script(src="scripts/map.js")
-	script(src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDakO19FB47AHux8bCnn4kCQkj2wU8o9cE&callback=initMap&libraries=places")
+	if user
+		script(src="scripts/buttons.js")
+		script(src="scripts/map.js")
+		script(src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDakO19FB47AHux8bCnn4kCQkj2wU8o9cE&callback=initMap&libraries=places")
