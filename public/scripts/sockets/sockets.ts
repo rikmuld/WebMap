@@ -4,11 +4,15 @@ namespace Sockets {
     }
 
     export function getLocations() {
-        SocketHandler.socket.emit(SocketIDs.LOCATIONS_REQUESTED)
+        SocketHandler.socket.emit(SocketIDs.LOCATIONS_REQUESTED, user._id)
     }
 
-    export function locationsGot(locations: Tables.Location[]) {
-        locations.forEach(l => addLocations(locations))
+    export function getLocationsFor(user: string){
+        SocketHandler.socket.emit(SocketIDs.LOCATIONS_REQUESTED, user)
+    }
+
+    export function locationsGot(fullUser: Tables.UserPopulated) {
+        Subscriptions.setupSubscription(fullUser)
     }
 
     export function findUsers(query: string, count: number) {
@@ -20,13 +24,13 @@ namespace Sockets {
     }
     
     export function manageSubscription(to: string, subsciption: boolean) {
-        const index = user.subsciptions.indexOf(to)
+        const index = user.subscriptions.indexOf(to)
 
         if(subsciption && index == -1) {
-            user.subsciptions.push(to)
+            user.subscriptions.push(to)
             SocketHandler.socket.emit(SocketIDs.SUBSCRIBE_MANAGE, to, subsciption)  
         } else if(!subsciption && index >= 0) {
-            user.subsciptions.splice(index, 1)
+            user.subscriptions.splice(index, 1)
             SocketHandler.socket.emit(SocketIDs.SUBSCRIBE_MANAGE, to, subsciption)  
         }
     }

@@ -1,13 +1,13 @@
 class SimpleControl {
-    constructor(map, position, id) {
+    constructor(map, position, id, mainElement = "div") {
         const instance = this;
         this.map = map;
-        this.div = document.createElement('div');
-        this.div.id = id;
-        this.div.addEventListener("click", function (event) {
+        this.el = document.createElement(mainElement);
+        this.el.id = id;
+        this.el.addEventListener("click", function (event) {
             instance.click(this, event);
         });
-        this.map.controls[position].push(this.div);
+        this.map.controls[position].push(this.el);
     }
     click(div, ev) { }
 }
@@ -45,12 +45,12 @@ class AddLocation extends SimpleControl {
     desctopClick() {
         this.active = !this.active;
         if (this.active) {
-            this.div.classList.add("active");
-            this.childs.forEach(child => child.div.classList.add("active"));
+            this.el.classList.add("active");
+            this.childs.forEach(child => child.el.classList.add("active"));
         }
         else {
-            this.div.classList.remove("active");
-            this.childs.forEach(child => child.div.classList.remove("active"));
+            this.el.classList.remove("active");
+            this.childs.forEach(child => child.el.classList.remove("active"));
         }
     }
     addLocation(pos) {
@@ -63,7 +63,7 @@ class LocationControl extends SimpleControl {
         super(map, position, id);
         const img = document.createElement('img');
         img.src = "/icons/location.png";
-        this.div.appendChild(img);
+        this.el.appendChild(img);
     }
     act() {
         getPosition(position => this.map.setCenter(toLatlon(position)));
@@ -73,9 +73,52 @@ class LocationControl extends SimpleControl {
     }
     error(error) {
         if (error)
-            this.div.firstElementChild.classList.add("error");
+            this.el.firstElementChild.classList.add("error");
         else
-            this.div.firstElementChild.classList.remove("error");
+            this.el.firstElementChild.classList.remove("error");
+    }
+}
+class Logout extends SimpleControl {
+    constructor(map, position) {
+        super(map, position, 'userLogout', 'a');
+        const img = document.createElement('img');
+        img.src = user.icon;
+        this.el.setAttribute("href", "/logout");
+        this.el.appendChild(img);
+        this.el.classList.add("user");
+    }
+}
+class SubscriptionIcon extends SimpleControl {
+    constructor(map, user) {
+        super(map, google.maps.ControlPosition.LEFT_CENTER, user._id);
+        this.hidden = false;
+        this.user = user;
+        const img = document.createElement('img');
+        img.src = user.icon;
+        const fade = document.createElement('div');
+        fade.classList.add("fade");
+        this.el.appendChild(img);
+        this.el.appendChild(fade);
+        this.el.classList.add("user");
+        this.el.classList.add("subscription");
+        this.markers = createMarkers(user.locations);
+        this.show();
+    }
+    show() {
+        this.hidden = false;
+        this.markers.forEach(m => m.setMap(this.map));
+        this.el.classList.remove("hidden");
+    }
+    hide() {
+        this.hidden = true;
+        this.markers.forEach(m => m.setMap(null));
+        this.el.classList.add("hidden");
+    }
+    click() {
+        if (this.hidden)
+            this.show();
+        else
+            this.hide();
     }
 }
 class SearchBar extends SimpleControl {
@@ -86,37 +129,37 @@ class SearchBar extends SimpleControl {
         this.users = [];
         const input = document.createElement('input');
         input.placeholder = "Search for places, markers, users, tags...";
-        this.div.appendChild(input);
+        this.el.appendChild(input);
         this.search = new google.maps.places.SearchBox(input);
         const instance = this;
         input.addEventListener('input', (e) => instance.searchChanged(e));
+        input.addEventListener('focus', e => {
+            if (instance.users.length > 0)
+                instance.getPacContainer().addClass("show");
+        });
+        input.addEventListener('blur', e => {
+            setTimeout(() => instance.getPacContainer().removeClass("show"), 100);
+        });
         map.addListener('bounds_changed', () => instance.search.setBounds(map.getBounds()));
         this.search.addListener('places_changed', () => instance.locationChanged());
-        SearchBar.getPacContainer().addClass("hidden");
+        google.maps.event.addDomListener(this.search, 'keydown', (e) => {
+            if (e.keyCode != 65)
+                e.preventDefault();
+        });
     }
     searchChanged(e) {
         this.dosearch += 1;
-        this.checkOpenClose();
         setTimeout(() => {
             this.dosearch -= 1;
             if (this.dosearch == 0)
-                this.findUsers(this.div.firstChild);
+                this.findUsers(this.el.firstChild, true);
         }, 120);
     }
-    checkOpenClose(tries = 4) {
-        const container = SearchBar.getPacContainer();
-        const instance = this;
-        if (container.children().length == 0)
-            container.addClass("hidden");
-        else
-            container.removeClass("hidden");
-        if (tries > 0) {
-            setTimeout(() => instance.checkOpenClose(tries - 1), 25);
-        }
-    }
-    findUsers(input) {
+    findUsers(input, subscriptions) {
         if (input.value.length == 0)
             this.updateUsers([]);
+        else if (subscriptions)
+            Sockets.findUsers(input.value, 3); //change to only search in subscriptions
         else
             Sockets.findUsers(input.value, 3);
     }
@@ -124,19 +167,22 @@ class SearchBar extends SimpleControl {
         this.cleanUsers();
         this.users = users;
         this.users.forEach(user => {
-            const pac = SearchBar.generatePacUserItem(user);
-            SearchBar.getPacContainer().prepend(pac);
+            const pac = this.generatePacUserItem(user);
+            this.getPacContainer().prepend(pac);
         });
-        this.checkOpenClose();
+        if (this.users.length > 0)
+            this.getPacContainer().addClass("show");
+        else
+            this.getPacContainer().removeClass("show");
     }
     cleanUsers() {
         this.users = [];
         $(".pac-user-item").remove();
     }
-    static getPacContainer() {
+    getPacContainer() {
         return $(".pac-container");
     }
-    static generatePacUserItem(user) {
+    generatePacUserItem(user) {
         const el = document.createElement("div");
         el.classList.add("pac-item");
         el.classList.add("pac-user-item");
@@ -148,14 +194,15 @@ class SearchBar extends SimpleControl {
         const icon = document.createElement("span");
         icon.classList.add("pac-icon");
         icon.classList.add("pac-icon-user");
-        el.addEventListener("click", () => {
-            //if no subscription
+        $(el).click(() => {
+            const input = this.el.firstElementChild;
+            input.value = user.id;
+            $(input).focus();
+            $(input).blur();
+            this.updateUsers([]);
+            //set subscription user to state active
+            //however for now:
             Sockets.manageSubscription(user._id, true);
-            console.log(user);
-            //also color user icon and request locations for it etc...
-            //hide search thingy
-            //if subscription
-            //only show nodes of the user
         });
         el.appendChild(icon);
         el.appendChild(name);
@@ -165,6 +212,7 @@ class SearchBar extends SimpleControl {
     locationChanged() {
         const instance = this;
         const places = this.search.getPlaces();
+        this.searchChanged(null);
         this.markers.forEach(marker => marker.setMap(null));
         this.markers = [];
         const bounds = new google.maps.LatLngBounds();

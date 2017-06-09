@@ -5,11 +5,20 @@ namespace Tables {
         lng: number
     }
 
-    export interface User {
+    interface UserGeneric {
         _id: string,
         id: string,
         name: string,
         icon: string,
-        subsciptions: string[],
+    }
+
+    export interface User extends UserGeneric {
+        subscriptions: string[],
+        locations: string[],
+    }
+
+    export interface UserPopulated extends UserGeneric {
+        subscriptions: UserGeneric[]
+        locations: Location[]
     }
 }

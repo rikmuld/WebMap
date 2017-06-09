@@ -26,7 +26,8 @@ export namespace Setup {
         displayName: string,
         _json: {
             image: {
-                url: string
+                url: string,
+                isDefault: boolean
             }
         }
     }
@@ -58,7 +59,7 @@ export namespace Setup {
                 host: 'localhost',
                 port: 6379,
                 client: redisClient,
-                ttl: 86400
+                ttl: 7 * 24 * 3600
             })
         }
 
@@ -91,7 +92,8 @@ export namespace Setup {
 
         const handleLogin = (request: express.Request, accessToken, refreshToken, profile: GoogleProfile, done) => {
             process.nextTick(() => {
-                const newUser = TableData.User.user(profile.email, profile.displayName, profile._json.image.url) //rather would have this lazy, also img is size 50px, better set to whatever size needed
+                const icon = profile._json.image.isDefault? null : profile._json.image.url
+                const newUser = TableData.User.user(profile.email, profile.displayName, icon) //rather would have this lazy, also img is size 50px, better set to whatever size needed
                 const findUser = { id: profile.email }
 
                 TableHelper.createOrReturn(Tables.User, findUser, newUser).then(user => done(null, user), err => done(err, null))

@@ -5,11 +5,15 @@ var Sockets;
     }
     Sockets.addLocation = addLocation;
     function getLocations() {
-        SocketHandler.socket.emit(SocketIDs.LOCATIONS_REQUESTED);
+        SocketHandler.socket.emit(SocketIDs.LOCATIONS_REQUESTED, user._id);
     }
     Sockets.getLocations = getLocations;
-    function locationsGot(locations) {
-        locations.forEach(l => addLocations(locations));
+    function getLocationsFor(user) {
+        SocketHandler.socket.emit(SocketIDs.LOCATIONS_REQUESTED, user);
+    }
+    Sockets.getLocationsFor = getLocationsFor;
+    function locationsGot(fullUser) {
+        Subscriptions.setupSubscription(fullUser);
     }
     Sockets.locationsGot = locationsGot;
     function findUsers(query, count) {
@@ -21,13 +25,13 @@ var Sockets;
     }
     Sockets.usersGot = usersGot;
     function manageSubscription(to, subsciption) {
-        const index = user.subsciptions.indexOf(to);
+        const index = user.subscriptions.indexOf(to);
         if (subsciption && index == -1) {
-            user.subsciptions.push(to);
+            user.subscriptions.push(to);
             SocketHandler.socket.emit(SocketIDs.SUBSCRIBE_MANAGE, to, subsciption);
         }
         else if (!subsciption && index >= 0) {
-            user.subsciptions.splice(index, 1);
+            user.subscriptions.splice(index, 1);
             SocketHandler.socket.emit(SocketIDs.SUBSCRIBE_MANAGE, to, subsciption);
         }
     }

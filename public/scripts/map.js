@@ -55,8 +55,10 @@ function initMap() {
     locationControl = new LocationControl(webMap, google.maps.ControlPosition.LEFT_TOP, LOCATION_BOX);
     serachbar = new SearchBar(webMap, google.maps.ControlPosition.TOP_LEFT, SEARCH_BOX);
     addLocation = new AddLocation(webMap, google.maps.ControlPosition.RIGHT_BOTTOM, ADD_ICON);
+    const logout = new Logout(webMap, google.maps.ControlPosition.RIGHT_TOP);
     locationControl.act();
     Sockets.getLocations();
+    user.subscriptions.forEach(s => Sockets.getLocationsFor(s));
 }
 function toLatlon(pos) {
     return new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
@@ -69,6 +71,14 @@ function placeMarker(map, latlng) {
         position: latlng,
         map: map
     });
+}
+function createMarker(latlng) {
+    return new google.maps.Marker({
+        position: latlng
+    });
+}
+function createMarkers(locs) {
+    return locs.map(l => createMarker(mkLatLng(l.lat, l.lng)));
 }
 function addLocations(locs) {
     locs.forEach(l => placeMarker(webMap, mkLatLng(l.lat, l.lng)));

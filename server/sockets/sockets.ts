@@ -18,12 +18,11 @@ export namespace Sockets {
     }
 
     export function getLocations(app: express.Express, socket: SocketIO.Socket) {
-        return () => {
-            withUser(socket, user => {
-                Tables.Markers.find({ _id: user.locations }, (err, locations) => {
-                    if (err) console.log(err)
-                    else socket.emit(SocketIDs.LOCATIONS_REQUESTED, locations.map(l => TableData.Location.location(l.lat, l.lng)))
-                })
+        return (user: string) => {
+            Tables.User.findOne({_id: user}).populate('locations').exec((err, fullUser) => { 
+                if (err) console.log(err)
+                else if(fullUser) socket.emit(SocketIDs.LOCATIONS_REQUESTED, fullUser)
+                else console.log("Could not get user!")
             })
         }
     }
@@ -50,11 +49,12 @@ export namespace Sockets {
                 } else {
                     const index = user.subscriptions.indexOf(to)
                     if(index == -1) {
-                        Tables.User.findOne({_id: to}, (err, newUser) => {
+                        Tables.User.findOne({_id: to}).populate('locations').exec((err, newUser) => {
                             if(err) console.log(err)
                             else {
                                 user.subscriptions.push(newUser._id)
                                 user.save()
+                                socket.emit(SocketIDs.LOCATIONS_REQUESTED, newUser)
                             }
                         })
                     }
