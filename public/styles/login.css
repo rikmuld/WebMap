@@ -17,10 +17,9 @@ html {
   margin-right: auto;
   margin-left: auto;
   border-radius: 3px;
-  box-shadow: 2px 2px 7px #dcdcdd;
 }
 .login:hover {
-  box-shadow: 4px 4px 20px #dcdcdd;
+  box-shadow: 4px 4px 20px rgba(0,0,0,0.6);
 }
 .googleicon {
   display: inline-block;
@@ -31,7 +30,7 @@ html {
 }
 .buttontext {
   font-size: 14px;
-  padding-left: 42px;
+  padding-left: 50px;
   padding-right: 42px;
   font-weight: bold;
   margin-bottom: 0px;

@@ -3,6 +3,94 @@ const MAP = "map";
 const SEARCH_BOX = "searchbar";
 const LOCATION_BOX = "myLocation";
 const ADD_ICON = "addIcon";
+const LOGINSTYLE = [
+    {
+        "elementType": "labels",
+        "stylers": [
+            {
+                "visibility": "off"
+            }
+        ]
+    },
+    {
+        "featureType": "administrative",
+        "stylers": [
+            {
+                "color": "#fdbd54"
+            },
+            {
+                "visibility": "off"
+            }
+        ]
+    },
+    {
+        "featureType": "administrative.country",
+        "elementType": "geometry.stroke",
+        "stylers": [
+            {
+                "visibility": "off"
+            }
+        ]
+    },
+    {
+        "featureType": "administrative.neighborhood",
+        "stylers": [
+            {
+                "visibility": "off"
+            }
+        ]
+    },
+    {
+        "featureType": "poi",
+        "stylers": [
+            {
+                "color": "#8fdabd"
+            }
+        ]
+    },
+    {
+        "featureType": "road",
+        "stylers": [
+            {
+                "color": "#ffd082"
+            }
+        ]
+    },
+    {
+        "featureType": "road.highway",
+        "elementType": "labels",
+        "stylers": [
+            {
+                "visibility": "off"
+            }
+        ]
+    },
+    {
+        "featureType": "road.local",
+        "stylers": [
+            {
+                "visibility": "off"
+            }
+        ]
+    },
+    {
+        "featureType": "transit",
+        "stylers": [
+            {
+                "visibility": "off"
+            }
+        ]
+    },
+    {
+        "featureType": "water",
+        "elementType": "geometry.fill",
+        "stylers": [
+            {
+                "color": "#8fe5fb"
+            }
+        ]
+    }
+];
 const STYLE = [
     {
         featureType: "road.highway",
@@ -36,14 +124,15 @@ let addLocation;
 function initMap() {
     const UTWENTE = new google.maps.LatLng(52.241033, 6.852413);
     const TOKYO = new google.maps.LatLng(35.652832, 139.839478);
+    const NEWYORK = new google.maps.LatLng(40.730610, -73.935242);
     webMap = new google.maps.Map(document.getElementById(MAP), {
         center: TOKYO,
-        zoom: 16,
+        zoom: 14,
         zoomControl: user != null,
         zoomControlOptions: {
             position: google.maps.ControlPosition.TOP_LEFT
         },
-        styles: STYLE,
+        styles: user == null ? LOGINSTYLE : STYLE,
         panControl: false,
         streetViewControl: user != null,
         streetViewControlOptions: {
@@ -60,6 +149,9 @@ function initMap() {
         locationControl.act();
         Sockets.getLocations();
         user.subscriptions.forEach(s => Sockets.getLocationsFor(s));
+    }
+    else {
+        //placeMarker()
     }
 }
 function toLatlon(pos) {
