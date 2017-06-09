@@ -39,26 +39,28 @@ function initMap() {
     webMap = new google.maps.Map(document.getElementById(MAP), {
         center: TOKYO,
         zoom: 16,
-        zoomControl: true,
+        zoomControl: user != null,
         zoomControlOptions: {
             position: google.maps.ControlPosition.TOP_LEFT
         },
         styles: STYLE,
         panControl: false,
-        streetViewControl: true,
+        streetViewControl: user != null,
         streetViewControlOptions: {
             position: google.maps.ControlPosition.TOP_LEFT
         },
         mapTypeControl: false,
         overviewMapControl: false
     });
-    locationControl = new LocationControl(webMap, google.maps.ControlPosition.LEFT_TOP, LOCATION_BOX);
-    serachbar = new SearchBar(webMap, google.maps.ControlPosition.TOP_LEFT, SEARCH_BOX);
-    addLocation = new AddLocation(webMap, google.maps.ControlPosition.RIGHT_BOTTOM, ADD_ICON);
-    const logout = new Logout(webMap, google.maps.ControlPosition.RIGHT_TOP);
-    locationControl.act();
-    Sockets.getLocations();
-    user.subscriptions.forEach(s => Sockets.getLocationsFor(s));
+    if (user != null) {
+        locationControl = new LocationControl(webMap, google.maps.ControlPosition.LEFT_TOP, LOCATION_BOX);
+        serachbar = new SearchBar(webMap, google.maps.ControlPosition.TOP_LEFT, SEARCH_BOX);
+        addLocation = new AddLocation(webMap, google.maps.ControlPosition.RIGHT_BOTTOM, ADD_ICON);
+        const logout = new Logout(webMap, google.maps.ControlPosition.RIGHT_TOP);
+        locationControl.act();
+        Sockets.getLocations();
+        user.subscriptions.forEach(s => Sockets.getLocationsFor(s));
+    }
 }
 function toLatlon(pos) {
     return new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);

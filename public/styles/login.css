@@ -1,5 +1,7 @@
-body {
-  background-color: #c9ecf3;
+body,
+html {
+  height: 100%;
+  background-color: rgba(0,0,0,0.7);
 }
 .container {
   display: flex;
@@ -7,48 +9,41 @@ body {
   justify-content: center;
 }
 .login {
-  display: inline-block;
+  display: block;
   background: #fff;
   width: 190px;
-  border: thin solid #888;
-  box-shadow: 1px 1px 1px #808080;
   white-space: nowrap;
+  height: 44px;
+  margin-right: auto;
+  margin-left: auto;
+  border-radius: 3px;
+  box-shadow: 2px 2px 7px #dcdcdd;
 }
-#logo {
-  width: 100%;
-  height: auto;
+.login:hover {
+  box-shadow: 4px 4px 20px #dcdcdd;
 }
-span.googleicon {
-  background: url("icons/googlelogo.svg");
+.googleicon {
   display: inline-block;
   float: left;
   vertical-align: middle;
   height: 42px;
   width: 42px;
 }
-span.buttontext {
-  display: inline-block;
-  vertical-align: middle;
+.buttontext {
   font-size: 14px;
   padding-left: 42px;
   padding-right: 42px;
   font-weight: bold;
-}
-#headding {
-  font-family: 'Roboto', sans-serif;
-  margin-bottom: 3vh;
-  text-align: center;
-}
-.h1 {
-  display: block;
-  font-weight: 100;
-  color: #fff;
+  margin-bottom: 0px;
 }
 a {
   font-family: 'Roboto', sans-serif;
   font-weight: 400;
   text-decoration: none;
   color: #808080;
+}
+a:hover {
+  text-decoration: none;
 }
 #userlogin {
   margin: 0 auto;

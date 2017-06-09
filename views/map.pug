@@ -1,33 +1,27 @@
 ﻿extend structure/simple.pug
 
 block body
+	#map
 	if !user
-		.container
-			.row
+		.container.yAlign
+			.row#logincard
 				.col-lg-6.col-sm-12
 					img#logo(src="icons/logo_255.png")
 				.col-lg-6.col-sm-12
-					.col-sm-12
-						.h1.text-lg-center.text-sm-center WebMap
+					.yAlign
+						.col-sm-12
+							h1#webmap.text-lg-center.text-sm-center WebMap
 
-					.col-sm-12
-						a.login(href="/auth/google")
-								span.googleicon(rc="icons/googlelogo.svg")
-								p#buttontext Sign in with google
+						.col-sm-12
+							a.login(href="/auth/google")
+									img.googleicon(src="icons/googlelogo.svg")
+									.yAlign
+										p.buttontext Sign in with google
 
 		link(rel='stylesheet' href='styles/login.css' type='text/css')
-	else
-		#map
 
 block append scripts
-<<<<<<< HEAD
-	if user
-		script(src="scripts/buttons.js")
-		script(src="scripts/map.js")
-		script(src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDakO19FB47AHux8bCnn4kCQkj2wU8o9cE&callback=initMap&libraries=places")
-=======
 	script(src="scripts/buttons.js")
 	script(src="scripts/map.js")
 	script(src="scripts/subscriptions.js")
 	script(src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDakO19FB47AHux8bCnn4kCQkj2wU8o9cE&callback=initMap&libraries=places")
->>>>>>> 3d3c312ef3925e025a7c6d26c35dfb27d7b6ab30

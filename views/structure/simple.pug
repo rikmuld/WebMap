@@ -15,6 +15,9 @@ block scripts
         each subscription in user.subscriptions
             script.
                 user.subscriptions.push('#{subscription}')
+    else
+        script.
+            var user = null
 
 block styles
     include ../includes/styles.pug
