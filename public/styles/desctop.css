@@ -9,7 +9,6 @@
   margin-left: auto;
   margin-right: auto;
   border-radius: 13%;
-  margin-left: -5px;
 }
 #webmap {
   font-family: 'Roboto', sans-serif;
@@ -19,4 +18,41 @@
   font-weight: 200;
   color: #fff;
   margin-bottom: 40px;
+}
+#brand {
+  height: 200px;
+  width: 311px;
+  animation: brand 1.2s cubic-bezier(0.075, 0.82, 0.165, 1) 1.4s both;
+}
+@-moz-keyframes brand {
+  0% {
+    width: 0px;
+  }
+  100% {
+    width: 311px;
+  }
+}
+@-webkit-keyframes brand {
+  0% {
+    width: 0px;
+  }
+  100% {
+    width: 311px;
+  }
+}
+@-o-keyframes brand {
+  0% {
+    width: 0px;
+  }
+  100% {
+    width: 311px;
+  }
+}
+@keyframes brand {
+  0% {
+    width: 0px;
+  }
+  100% {
+    width: 311px;
+  }
 }

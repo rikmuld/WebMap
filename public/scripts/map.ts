@@ -135,13 +135,13 @@ function initMap() {
     webMap = new google.maps.Map(document.getElementById(MAP), {
         center: TOKYO,
         zoom: 14,
-        zoomControl: user != null,
+        zoomControl: true,
         zoomControlOptions: {
             position: google.maps.ControlPosition.TOP_LEFT
         },
-        styles: user == null? LOGINSTYLE:STYLE,
-        panControl: false,
-        streetViewControl: user != null,
+        styles: STYLE,
+        panControl: true,
+        streetViewControl: true,
         streetViewControlOptions: {
             position: google.maps.ControlPosition.TOP_LEFT
         },
@@ -149,23 +149,16 @@ function initMap() {
         overviewMapControl: false
     })
 
-    if(user != null) {
-        locationControl = new LocationControl(webMap, google.maps.ControlPosition.LEFT_TOP, LOCATION_BOX)
-        serachbar = new SearchBar(webMap, google.maps.ControlPosition.TOP_LEFT, SEARCH_BOX)
-        addLocation = new AddLocation(webMap, google.maps.ControlPosition.RIGHT_BOTTOM, ADD_ICON)
-        
-        const logout = new Logout(webMap, google.maps.ControlPosition.RIGHT_TOP)
+    locationControl = new LocationControl(webMap, google.maps.ControlPosition.LEFT_TOP, LOCATION_BOX)
+    serachbar = new SearchBar(webMap, google.maps.ControlPosition.TOP_LEFT, SEARCH_BOX)
+    addLocation = new AddLocation(webMap, google.maps.ControlPosition.RIGHT_BOTTOM, ADD_ICON)
+    
+    const logout = new Logout(webMap, google.maps.ControlPosition.RIGHT_TOP)
 
-        locationControl.act()
-        
-        Sockets.getLocations()
-        user.subscriptions.forEach(s => Sockets.getLocationsFor(s))
-    } else {
-        placeMarker(webMap, mkLatLng(35.64864814406143, 139.80308532714844))
-        placeMarker(webMap, mkLatLng(35.6907639509368, 139.8284912109375))
-        placeMarker(webMap, mkLatLng(35.641115161539176, 139.8727798461914))
-        placeMarker(webMap, mkLatLng(35.677796881563715, 139.9980926513672))
-    }
+    locationControl.act()
+    
+    Sockets.getLocations()
+    user.subscriptions.forEach(s => Sockets.getLocationsFor(s))
 }
 
 function toLatlon(pos: Position): google.maps.LatLng {

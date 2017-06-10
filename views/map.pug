@@ -5,23 +5,23 @@ block body
 	if !user
 		.container.yAlign
 			.row#logincard
-				.col-lg-5.col-sm-12.fade-in-fast
+				.col-lg-5.col-sm-12
 					img#logo(src="icons/logo_255.png")
 				.col-lg-7.col-sm-12#brand
 					.yAlign
 						.col-sm-12
-							h1#webmap.text-lg-center.text-sm-center.tracking-in-expand WebMap
-
+							h1#webmap WebMap
 						.col-sm-12
 							a.login.fade-in(href="/auth/google")
-									img.googleicon(src="icons/googlelogo.svg")
-									.yAlign
-										p.buttontext Sign in with google
+								img.googleicon(src="icons/googlelogo.svg")
+								.yAlign
+									p.buttontext Sign in with google
 
 		link(rel='stylesheet' href='styles/login.css' type='text/css')
 
 block append scripts
-	script(src="scripts/buttons.js")
-	script(src="scripts/map.js")
-	script(src="scripts/subscriptions.js")
-	script(src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDakO19FB47AHux8bCnn4kCQkj2wU8o9cE&callback=initMap&libraries=places")
+	if user
+		script(src="scripts/buttons.js")
+		script(src="scripts/map.js")
+		script(src="scripts/subscriptions.js")
+		script(src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDakO19FB47AHux8bCnn4kCQkj2wU8o9cE&callback=initMap&libraries=places")
