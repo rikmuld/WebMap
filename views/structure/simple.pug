@@ -8,13 +8,8 @@ block scripts
                 _id: "#{user._id}",
                 id: "#{user.id}",
                 name: "#{user.name}",
-                icon: "#{user.icon}",
-                subscriptions: []
+                icon: "#{user.icon}"
             }
-
-        each subscription in user.subscriptions
-            script.
-                user.subscriptions.push('#{subscription}')
     else
         script.
             var user = null

@@ -8,12 +8,9 @@ var Sockets;
         SocketHandler.socket.emit(SocketIDs.LOCATIONS_REQUESTED, user._id);
     }
     Sockets.getLocations = getLocations;
-    function getLocationsFor(user) {
-        SocketHandler.socket.emit(SocketIDs.LOCATIONS_REQUESTED, user);
-    }
-    Sockets.getLocationsFor = getLocationsFor;
-    function locationsGot(fullUser) {
-        Subscriptions.setupSubscription(fullUser);
+    function locationsGot(fullUsers) {
+        console.log(fullUsers);
+        Subscriptions.setupSubscriptions(fullUsers);
     }
     Sockets.locationsGot = locationsGot;
     function findUsers(query, count) {

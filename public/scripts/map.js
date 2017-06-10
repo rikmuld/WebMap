@@ -3,95 +3,6 @@ const MAP = "map";
 const SEARCH_BOX = "searchbar";
 const LOCATION_BOX = "myLocation";
 const ADD_ICON = "addIcon";
-//needs fix....
-const LOGINSTYLE = [
-    {
-        "elementType": "labels",
-        "stylers": [
-            {
-                "visibility": "off"
-            }
-        ]
-    },
-    {
-        "featureType": "administrative",
-        "stylers": [
-            {
-                "color": "#fdbd54"
-            },
-            {
-                "visibility": "off"
-            }
-        ]
-    },
-    {
-        "featureType": "administrative.country",
-        "elementType": "geometry.stroke",
-        "stylers": [
-            {
-                "visibility": "off"
-            }
-        ]
-    },
-    {
-        "featureType": "administrative.neighborhood",
-        "stylers": [
-            {
-                "visibility": "off"
-            }
-        ]
-    },
-    {
-        "featureType": "poi",
-        "stylers": [
-            {
-                "color": "#8fdabd"
-            }
-        ]
-    },
-    {
-        "featureType": "road",
-        "stylers": [
-            {
-                "color": "#ffd082"
-            }
-        ]
-    },
-    {
-        "featureType": "road.highway",
-        "elementType": "labels",
-        "stylers": [
-            {
-                "visibility": "off"
-            }
-        ]
-    },
-    {
-        "featureType": "road.local",
-        "stylers": [
-            {
-                "visibility": "off"
-            }
-        ]
-    },
-    {
-        "featureType": "transit",
-        "stylers": [
-            {
-                "visibility": "off"
-            }
-        ]
-    },
-    {
-        "featureType": "water",
-        "elementType": "geometry.fill",
-        "stylers": [
-            {
-                "color": "#8fe5fb"
-            }
-        ]
-    }
-];
 const STYLE = [
     {
         featureType: "road.highway",
@@ -118,6 +29,20 @@ const STYLE = [
             { visibility: "off" }
         ]
     }
+];
+const marker = `M11.591,32.564c0,0 11.14,-14.605 11.14,-19.657c0,-6.148 -4.992,-11.139 -11.14,-11.139c-6.148,0 -11.14,4.991 -11.14,11.139c0,5.052 11.14,19.657
+ 11.14,19.657Zm0,-26.802c3.147,0 5.702,2.555 5.702,5.702c0,3.147 -2.555,5.702 -5.702,5.702c-3.147,0 -5.702,-2.555 -5.702,-5.702c0,-3.147 2.555,-5.702 5.702,-5.702Z`;
+const colors = [
+    [231, 76, 60],
+    [26, 188, 156],
+    [241, 196, 15],
+    [46, 204, 113],
+    [230, 126, 34],
+    [52, 152, 219],
+    [155, 89, 182],
+    [236, 240, 241],
+    [52, 73, 94],
+    [149, 165, 166]
 ];
 let webMap;
 let locationControl;
@@ -149,7 +74,6 @@ function initMap() {
     const logout = new Logout(webMap, google.maps.ControlPosition.RIGHT_TOP);
     locationControl.act();
     Sockets.getLocations();
-    user.subscriptions.forEach(s => Sockets.getLocationsFor(s));
 }
 function toLatlon(pos) {
     return new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
@@ -157,25 +81,21 @@ function toLatlon(pos) {
 function mkLatLng(lat, lng) {
     return new google.maps.LatLng(lat, lng);
 }
-function placeMarker(map, latlng) {
+function createMarker(latlng, color) {
     return new google.maps.Marker({
         position: latlng,
-        map: map,
-        icon: "icons/MarkerActive.png"
+        icon: {
+            path: marker,
+            fillColor: colorRGB(color),
+            fillOpacity: 1,
+            strokeWeight: 1,
+            scale: 1.3,
+            anchor: new google.maps.Point(11.4, 33),
+        }
     });
 }
-function createMarker(latlng) {
-    console.log(latlng.lat() + ", " + latlng.lng());
-    return new google.maps.Marker({
-        position: latlng,
-        icon: "icons/MarkerActive.png"
-    });
-}
-function createMarkers(locs) {
-    return locs.map(l => createMarker(mkLatLng(l.lat, l.lng)));
-}
-function addLocations(locs) {
-    locs.forEach(l => placeMarker(webMap, mkLatLng(l.lat, l.lng)));
+function createMarkers(locs, color) {
+    return locs.map(l => createMarker(mkLatLng(l.lat, l.lng), color));
 }
 function geoError() {
     locationControl.error(true);
@@ -190,4 +110,25 @@ function getPosition(callback, error) {
     }
     else
         geoError();
+}
+function colorRGB(color) {
+    return "rgb(" + colors[color][0] + "," + colors[color][1] + "," + colors[color][2] + ")";
+}
+function generateUserImg(user, color = -1) {
+    if (user.icon) {
+        const img = document.createElement('img');
+        img.src = user.icon;
+        if (color >= 0)
+            img.setAttribute("style", "border: 4px solid " + colorRGB(color));
+        return img;
+    }
+    else {
+        const img = document.createElement('div');
+        const name = user.name.split(" ");
+        img.classList.add("profileImageID");
+        img.innerText = name[0][0] + name[name.length - 1][0];
+        if (color >= 0)
+            img.setAttribute("style", "background-color: " + colorRGB(color));
+        return img;
+    }
 }
