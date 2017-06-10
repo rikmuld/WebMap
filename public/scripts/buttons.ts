@@ -70,8 +70,7 @@ class AddLocation extends SimpleControl {
     }
 
     private addLocation(pos: google.maps.LatLng){
-        placeMarker(this.map, pos)
-        Sockets.addLocation(pos.lat(), pos.lng())
+        Subscriptions.addLocation(user._id, pos)
     }
 }
 
@@ -103,11 +102,8 @@ class Logout extends SimpleControl {
     constructor(map: google.maps.Map, position: google.maps.ControlPosition) {
         super(map, position, 'userLogout', 'a')
 
-        const img = document.createElement('img')
-        img.src = user.icon
-
         this.el.setAttribute("href", "/logout")
-        this.el.appendChild(img)
+        this.el.appendChild(generateUserImg(user, 0))
         this.el.classList.add("user")
     }
 }
@@ -116,24 +112,23 @@ class SubscriptionIcon extends SimpleControl {
     user: Tables.UserPopulated
     markers: google.maps.Marker[]
     hidden: boolean = false
+    color: number
 
-    constructor(map: google.maps.Map, user: Tables.UserPopulated) {
+    constructor(map: google.maps.Map, user: Tables.UserPopulated, color: number) {
         super(map, google.maps.ControlPosition.LEFT_CENTER, user._id)
 
         this.user = user
-
-        const img = document.createElement('img')
-        img.src = user.icon
+        this.color = color
 
         const fade = document.createElement('div')
         fade.classList.add("hider")
 
-        this.el.appendChild(img)
+        this.el.appendChild(generateUserImg(user, color))
         this.el.appendChild(fade)
         this.el.classList.add("user")
         this.el.classList.add("subscription")
 
-        this.markers = createMarkers(user.locations)
+        this.markers = createMarkers(user.locations, color)
         this.show()
     }
 
@@ -147,6 +142,13 @@ class SubscriptionIcon extends SimpleControl {
         this.hidden = true
         this.markers.forEach(m => m.setMap(null))
         this.el.classList.add("hidden")
+    }
+
+    addLocation(latlng: google.maps.LatLng) {
+        const marker = createMarker(latlng, this.color)
+        this.markers.push(marker)
+        marker.setMap(this.map)
+        Sockets.addLocation(latlng.lat(), latlng.lng())
     }
 
     click() {

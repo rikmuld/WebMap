@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const tables_1 = require("../database/tables");
 const future_1 = require("../structures/future");
 const socketHandler_1 = require("./socketHandler");
+const list_1 = require("../structures/list");
 //TODO make more flat
 var Sockets;
 (function (Sockets) {
@@ -19,17 +20,16 @@ var Sockets;
     Sockets.addLocation = addLocation;
     function getLocations(app, socket) {
         return (user) => {
-            tables_1.Tables.User.findOne({ _id: user }).populate('locations').exec((err, fullUser) => {
-                if (err)
-                    console.log(err);
-                else if (fullUser)
-                    socket.emit(socketHandler_1.SocketIDs.LOCATIONS_REQUESTED, fullUser);
-                else
-                    console.log("Could not get user!");
-            });
+            const userLoc = getLocation(user);
+            const users = userLoc.flatMap(fullUser => list_1.List.toIOMap(fullUser.subscriptions).run(getLocation));
+            userLoc.then(usr => socket.emit(socketHandler_1.SocketIDs.LOCATIONS_REQUESTED, [usr]), err => console.log(err));
+            users.then(urs => socket.emit(socketHandler_1.SocketIDs.LOCATIONS_REQUESTED, urs.toArray()), err => console.log(err));
         };
     }
     Sockets.getLocations = getLocations;
+    function getLocation(user) {
+        return future_1.Future.lift(tables_1.Tables.User.findOne({ _id: user }).populate('locations').exec());
+    }
     function getUsers(app, socket) {
         return (query, count, not) => {
             const users = tables_1.Tables.User.find({ "_id": { "$ne": not }, "$or": [

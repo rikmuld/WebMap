@@ -7,12 +7,9 @@ namespace Sockets {
         SocketHandler.socket.emit(SocketIDs.LOCATIONS_REQUESTED, user._id)
     }
 
-    export function getLocationsFor(user: string){
-        SocketHandler.socket.emit(SocketIDs.LOCATIONS_REQUESTED, user)
-    }
-
-    export function locationsGot(fullUser: Tables.UserPopulated) {
-        Subscriptions.setupSubscription(fullUser)
+    export function locationsGot(fullUsers: Tables.UserPopulated[]) {
+        console.log(fullUsers)
+        Subscriptions.setupSubscriptions(fullUsers)
     }
 
     export function findUsers(query: string, count: number) {

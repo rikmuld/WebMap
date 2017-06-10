@@ -3,6 +3,8 @@ import * as express from "express"
 import { Tables, TableData } from "../database/tables"
 import { Future } from "../structures/future"
 import { SocketIDs } from "./socketHandler"
+import { IOMap } from '../structures/iomap'
+import { List } from '../structures/list'
 
 //TODO make more flat
 export namespace Sockets {
@@ -19,12 +21,16 @@ export namespace Sockets {
 
     export function getLocations(app: express.Express, socket: SocketIO.Socket) {
         return (user: string) => {
-            Tables.User.findOne({_id: user}).populate('locations').exec((err, fullUser) => { 
-                if (err) console.log(err)
-                else if(fullUser) socket.emit(SocketIDs.LOCATIONS_REQUESTED, fullUser)
-                else console.log("Could not get user!")
-            })
+            const userLoc = getLocation(user)
+            const users = userLoc.flatMap(fullUser => List.toIOMap(fullUser.subscriptions).run(getLocation))
+            
+            userLoc.then(usr => socket.emit(SocketIDs.LOCATIONS_REQUESTED, [usr]), err => console.log(err))
+            users.then(urs => socket.emit(SocketIDs.LOCATIONS_REQUESTED, urs.toArray()), err => console.log(err))
         }
+    }
+
+    function getLocation(user: string): Future<TableData.User.User> {
+        return Future.lift(Tables.User.findOne({_id: user}).populate('locations').exec())
     }
 
     export function getUsers(app: express.Express, socket: SocketIO.Socket) {
