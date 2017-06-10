@@ -96,7 +96,7 @@ class SubscriptionIcon extends SimpleControl {
         const img = document.createElement('img');
         img.src = user.icon;
         const fade = document.createElement('div');
-        fade.classList.add("fade");
+        fade.classList.add("hider");
         this.el.appendChild(img);
         this.el.appendChild(fade);
         this.el.classList.add("user");

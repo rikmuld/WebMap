@@ -4,6 +4,7 @@ const MAP = "map"
 const SEARCH_BOX = "searchbar"
 const LOCATION_BOX = "myLocation"
 const ADD_ICON = "addIcon"
+//needs fix....
 const LOGINSTYLE = [
   {
     "elementType": "labels",
@@ -160,7 +161,10 @@ function initMap() {
         Sockets.getLocations()
         user.subscriptions.forEach(s => Sockets.getLocationsFor(s))
     } else {
-        //placeMarker()
+        placeMarker(webMap, mkLatLng(35.64864814406143, 139.80308532714844))
+        placeMarker(webMap, mkLatLng(35.6907639509368, 139.8284912109375))
+        placeMarker(webMap, mkLatLng(35.641115161539176, 139.8727798461914))
+        placeMarker(webMap, mkLatLng(35.677796881563715, 139.9980926513672))
     }
 }
 
@@ -181,6 +185,7 @@ function placeMarker(map: google.maps.Map, latlng: google.maps.LatLng): google.m
 }
 
 function createMarker(latlng: google.maps.LatLng): google.maps.Marker {
+    console.log(latlng.lat() + ", " + latlng.lng())	
     return new google.maps.Marker({
         position: latlng,
         icon: "icons/MarkerActive.png"
