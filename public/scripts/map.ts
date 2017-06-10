@@ -97,19 +97,21 @@ const STYLE = [
     {
         featureType: "road.highway",
         stylers: [
-            { color: "#ffc023" },
+            { color: "#ffd082" },
             { visibility: "simplified" }
         ]
     }, {
         featureType: "water",
         stylers: [
-            { color: "#98d8ee" }
+            { color: "#8fe5fb" }
         ]
-    }, {
+    },
+    
+     {
         featureType: "water",
         elementType: "geometry.fill",
         stylers: [
-            { color: "#a1e3f8" }
+            { color: "#8fe5fb" }
         ]
     }, {
         featureType: "road.highway",
@@ -177,14 +179,16 @@ function mkLatLng(lat: number, lng: number): google.maps.LatLng {
 function placeMarker(map: google.maps.Map, latlng: google.maps.LatLng): google.maps.Marker {
     return new google.maps.Marker({
         position: latlng,
-        map: map
+        map: map,
+        icon: "icons/MarkerActive.png"
     })
 }
 
 function createMarker(latlng: google.maps.LatLng): google.maps.Marker {
     console.log(latlng.lat() + ", " + latlng.lng())	
     return new google.maps.Marker({
-        position: latlng
+        position: latlng,
+        icon: "icons/MarkerActive.png"
     })
 }
 
