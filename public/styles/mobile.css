@@ -21,6 +21,21 @@
   margin-bottom: 100px;
   margin-top: 10px;
 }
+@media only screen and (max-height: 380px) {
+  #webmap {
+    margin-bottom: 30px;
+  }
+}
+@media only screen and (max-height: 450px) and (min-height: 380px) {
+  #webmap {
+    margin-bottom: 55px;
+  }
+}
+@media only screen and (max-height: 520px) and (min-height: 450px) {
+  #webmap {
+    margin-bottom: 80px;
+  }
+}
 #logo {
   width: 130px;
   display: block;

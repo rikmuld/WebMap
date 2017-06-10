@@ -3,6 +3,7 @@ const MAP = "map";
 const SEARCH_BOX = "searchbar";
 const LOCATION_BOX = "myLocation";
 const ADD_ICON = "addIcon";
+//needs fix....
 const LOGINSTYLE = [
     {
         "elementType": "labels",
@@ -151,7 +152,10 @@ function initMap() {
         user.subscriptions.forEach(s => Sockets.getLocationsFor(s));
     }
     else {
-        //placeMarker()
+        placeMarker(webMap, mkLatLng(35.64864814406143, 139.80308532714844));
+        placeMarker(webMap, mkLatLng(35.6907639509368, 139.8284912109375));
+        placeMarker(webMap, mkLatLng(35.641115161539176, 139.8727798461914));
+        placeMarker(webMap, mkLatLng(35.677796881563715, 139.9980926513672));
     }
 }
 function toLatlon(pos) {
@@ -167,6 +171,7 @@ function placeMarker(map, latlng) {
     });
 }
 function createMarker(latlng) {
+    console.log(latlng.lat() + ", " + latlng.lng());
     return new google.maps.Marker({
         position: latlng
     });
