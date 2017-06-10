@@ -18,6 +18,10 @@ namespace Subscriptions {
     }
 
     export function getColor(usr: string): number[] {
-        return colors[subscriptions.findIndex(s => s.user._id == usr)]
+        return colors[subIndex(usr)]
+    }
+    
+    export function subIndex(urs: string): number {
+        return subscriptions.findIndex(s => s.user._id == urs)
     }
 }

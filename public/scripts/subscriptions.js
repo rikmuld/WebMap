@@ -15,7 +15,11 @@ var Subscriptions;
     }
     Subscriptions.addLocation = addLocation;
     function getColor(usr) {
-        return colors[Subscriptions.subscriptions.findIndex(s => s.user._id == usr)];
+        return colors[subIndex(usr)];
     }
     Subscriptions.getColor = getColor;
+    function subIndex(urs) {
+        return Subscriptions.subscriptions.findIndex(s => s.user._id == urs);
+    }
+    Subscriptions.subIndex = subIndex;
 })(Subscriptions || (Subscriptions = {}));

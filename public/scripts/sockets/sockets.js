@@ -22,13 +22,11 @@ var Sockets;
     }
     Sockets.usersGot = usersGot;
     function manageSubscription(to, subsciption) {
-        const index = user.subscriptions.indexOf(to);
+        const index = Subscriptions.subIndex(to);
         if (subsciption && index == -1) {
-            user.subscriptions.push(to);
             SocketHandler.socket.emit(SocketIDs.SUBSCRIBE_MANAGE, to, subsciption);
         }
         else if (!subsciption && index >= 0) {
-            user.subscriptions.splice(index, 1);
             SocketHandler.socket.emit(SocketIDs.SUBSCRIBE_MANAGE, to, subsciption);
         }
     }

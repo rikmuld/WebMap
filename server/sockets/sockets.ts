@@ -60,7 +60,7 @@ export namespace Sockets {
                             else {
                                 user.subscriptions.push(newUser._id)
                                 user.save()
-                                socket.emit(SocketIDs.LOCATIONS_REQUESTED, newUser)
+                                socket.emit(SocketIDs.LOCATIONS_REQUESTED, [newUser])
                             }
                         })
                     }
