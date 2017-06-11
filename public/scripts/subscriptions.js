@@ -22,4 +22,9 @@ var Subscriptions;
         return Subscriptions.subscriptions.findIndex(s => s.user._id == urs);
     }
     Subscriptions.subIndex = subIndex;
+    function getLocations(user) {
+        const fullUser = Subscriptions.subscriptions.find(s => s.user._id == user);
+        return fullUser ? fullUser.user.locations : [];
+    }
+    Subscriptions.getLocations = getLocations;
 })(Subscriptions || (Subscriptions = {}));

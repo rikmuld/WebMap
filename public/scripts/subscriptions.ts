@@ -24,4 +24,9 @@ namespace Subscriptions {
     export function subIndex(urs: string): number {
         return subscriptions.findIndex(s => s.user._id == urs)
     }
+
+    export function getLocations(user: string): Tables.Location[] {
+        const fullUser = subscriptions.find(s => s.user._id == user)
+        return fullUser? fullUser.user.locations : []
+    }
 }

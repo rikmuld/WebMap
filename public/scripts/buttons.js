@@ -77,6 +77,30 @@ class LocationControl extends SimpleControl {
             this.el.firstElementChild.classList.remove("error");
     }
 }
+class SideNav extends SimpleControl {
+    constructor(map, position) {
+        super(map, position, 'hamburger', 'div');
+        this.isOpen = false;
+        const hamburger = document.createElement("span");
+        hamburger.innerText = "\u2630";
+        this.el.appendChild(hamburger);
+    }
+    click(div, ev) {
+        if (this.isOpen)
+            this.close();
+        else
+            this.open();
+    }
+    open() {
+        document.getElementById("mySubscriptions").style.width = "500px";
+        this.isOpen = true;
+    }
+    close() {
+        document.getElementById("mySubscriptions").style.width = "0";
+        this.isOpen = false;
+        serachbar.userSearch.value = "";
+    }
+}
 class Logout extends SimpleControl {
     constructor(map, position) {
         super(map, position, 'userLogout', 'a');
@@ -87,7 +111,7 @@ class Logout extends SimpleControl {
 }
 class SubscriptionIcon extends SimpleControl {
     constructor(map, user, color) {
-        super(map, google.maps.ControlPosition.LEFT_CENTER, user._id);
+        super(map, google.maps.ControlPosition.LEFT_BOTTOM, user._id);
         this.hidden = false;
         this.user = user;
         this.color = color;
@@ -133,7 +157,9 @@ class SearchBar extends SimpleControl {
         input.placeholder = "Search for places, markers, users, tags...";
         this.el.appendChild(input);
         this.search = new google.maps.places.SearchBox(input);
+        this.userSearch = $("#NavSearch").get()[0];
         const instance = this;
+        this.userSearch.addEventListener('input', (e) => instance.userSearchChanged(e));
         input.addEventListener('input', (e) => instance.searchChanged(e));
         input.addEventListener('focus', e => {
             if (instance.users.length > 0)
@@ -154,8 +180,11 @@ class SearchBar extends SimpleControl {
         setTimeout(() => {
             this.dosearch -= 1;
             if (this.dosearch == 0)
-                this.findUsers(this.el.firstChild, true);
+                this.findUsers(this.el.firstChild, !sideNav.isOpen);
         }, 120);
+    }
+    userSearchChanged(e) {
+        this.findUsers(this.userSearch, !sideNav.isOpen);
     }
     findUsers(input, subscriptions) {
         if (input.value.length == 0)
@@ -163,14 +192,20 @@ class SearchBar extends SimpleControl {
         else if (subscriptions)
             Sockets.findUsers(input.value, 3); //change to only search in subscriptions
         else
-            Sockets.findUsers(input.value, 3);
+            Sockets.findUsers(input.value, 10);
     }
     updateUsers(users) {
         this.cleanUsers();
         this.users = users;
         this.users.forEach(user => {
-            const pac = this.generatePacUserItem(user);
-            this.getPacContainer().prepend(pac);
+            if (sideNav.isOpen) {
+                const pac = this.generateSubscriptionElements(user);
+                this.getUserContainer().append(pac);
+            }
+            else {
+                const pac = this.generatePacUserItem(user);
+                this.getPacContainer().prepend(pac);
+            }
         });
         if (this.users.length > 0)
             this.getPacContainer().addClass("show");
@@ -180,9 +215,13 @@ class SearchBar extends SimpleControl {
     cleanUsers() {
         this.users = [];
         $(".pac-user-item").remove();
+        this.getUserContainer().html("");
     }
     getPacContainer() {
         return $(".pac-container");
+    }
+    getUserContainer() {
+        return $(".people");
     }
     generatePacUserItem(user) {
         const el = document.createElement("div");
@@ -209,6 +248,28 @@ class SearchBar extends SimpleControl {
         el.appendChild(icon);
         el.appendChild(name);
         el.appendChild(email);
+        return el;
+    }
+    generateSubscriptionElements(user) {
+        const el = document.createElement("div");
+        el.classList.add("person");
+        const img = document.createElement("div");
+        img.classList.add("user");
+        img.classList.add("yAlign");
+        const info = document.createElement("div");
+        info.classList.add("text");
+        info.classList.add("yAlign");
+        const usname = document.createElement("div");
+        usname.innerText = user.name;
+        usname.setAttribute("id", "Name");
+        const number = document.createElement("div");
+        number.innerText = Subscriptions.getLocations(user._id).length.toString();
+        number.setAttribute("id", "Number");
+        img.appendChild(generateUserImg(user, Subscriptions.subIndex(user._id)));
+        info.appendChild(usname);
+        info.appendChild(number);
+        el.appendChild(img);
+        el.appendChild(info);
         return el;
     }
     locationChanged() {

@@ -8,7 +8,7 @@ block body
 				.col-lg-5.col-sm-12
 					img#logo(src="icons/logo_255.png")
 				.col-lg-7.col-sm-12#brand
-					.yAlign
+					.yAlignDesc
 						.col-sm-12
 							h1#webmap WebMap
 						.col-sm-12
@@ -18,10 +18,32 @@ block body
 									p.buttontext Sign in with google
 
 		link(rel='stylesheet' href='styles/login.css' type='text/css')
+	else
+		.subscriptions#mySubscriptions
+			.TopNav
+				a#closebtn(href='javascript:sideNav.close()') ×
+				input#NavSearch(type='search', placeholder="Search for people")
+			.subcription
+			.peopleOuter
+				h2#subHeadding Subscriptions
+				.people
+					.person
+						img.profileImageID(src="icons/circle.png")
+						.text.yAlign
+							#Name Oliver Ford 
+							#Number 30
+						.subscribe
+							.subbtn
+								p.buttonText.yAlign SUBSCRIBE
+						.visibility
+							img#visibilityimg(src="icons/OpenEye@2x.png")
+			.settings
+				a#userLogout.user(href="/logout")
 
 block append scripts
 	if user
 		script(src="scripts/buttons.js")
+		script(src="scripts/sidenav.js")
 		script(src="scripts/map.js")
 		script(src="scripts/subscriptions.js")
 		script(src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDakO19FB47AHux8bCnn4kCQkj2wU8o9cE&callback=initMap&libraries=places")

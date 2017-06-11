@@ -38,7 +38,7 @@ a:active {
 #myLocation {
   width: 28px;
   height: 28px;
-  margin-left: 10px;
+  margin-bottom: 10px;
   cursor: pointer;
 }
 #myLocation img {
@@ -61,6 +61,8 @@ a:active {
   width: 392px;
   height: 48px;
   margin-top: 10px;
+  left: 80px;
+  z-index: 100;
 }
 #searchbar input,
 #searchbar input:focus,

@@ -48,6 +48,7 @@ let webMap;
 let locationControl;
 let serachbar;
 let addLocation;
+let sideNav;
 function initMap() {
     const UTWENTE = new google.maps.LatLng(52.241033, 6.852413);
     const TOKYO = new google.maps.LatLng(35.652832, 139.839478);
@@ -57,18 +58,19 @@ function initMap() {
         zoom: 14,
         zoomControl: true,
         zoomControlOptions: {
-            position: google.maps.ControlPosition.TOP_LEFT
+            position: google.maps.ControlPosition.BOTTOM_CENTER
         },
         styles: STYLE,
         panControl: true,
         streetViewControl: true,
         streetViewControlOptions: {
-            position: google.maps.ControlPosition.TOP_LEFT
+            position: google.maps.ControlPosition.BOTTOM_CENTER
         },
         mapTypeControl: false,
         overviewMapControl: false
     });
-    locationControl = new LocationControl(webMap, google.maps.ControlPosition.LEFT_TOP, LOCATION_BOX);
+    sideNav = new SideNav(webMap, google.maps.ControlPosition.TOP_LEFT);
+    locationControl = new LocationControl(webMap, google.maps.ControlPosition.BOTTOM_CENTER, LOCATION_BOX);
     serachbar = new SearchBar(webMap, google.maps.ControlPosition.TOP_LEFT, SEARCH_BOX);
     addLocation = new AddLocation(webMap, google.maps.ControlPosition.RIGHT_BOTTOM, ADD_ICON);
     const logout = new Logout(webMap, google.maps.ControlPosition.RIGHT_TOP);
