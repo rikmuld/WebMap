@@ -27,6 +27,7 @@ namespace Sockets {
             SocketHandler.socket.emit(SocketIDs.SUBSCRIBE_MANAGE, to, subsciption)  
         } else if(!subsciption && index >= 0) {
             SocketHandler.socket.emit(SocketIDs.SUBSCRIBE_MANAGE, to, subsciption)  
+            Subscriptions.remove(to)
         }
     }
 }

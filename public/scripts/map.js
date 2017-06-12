@@ -32,6 +32,7 @@ const STYLE = [
 ];
 const marker = `M11.591,32.564c0,0 11.14,-14.605 11.14,-19.657c0,-6.148 -4.992,-11.139 -11.14,-11.139c-6.148,0 -11.14,4.991 -11.14,11.139c0,5.052 11.14,19.657
  11.14,19.657Zm0,-26.802c3.147,0 5.702,2.555 5.702,5.702c0,3.147 -2.555,5.702 -5.702,5.702c-3.147,0 -5.702,-2.555 -5.702,-5.702c0,-3.147 2.555,-5.702 5.702,-5.702Z`;
+const nocolor = [149, 165, 166];
 const colors = [
     [231, 76, 60],
     [26, 188, 156],
@@ -40,9 +41,7 @@ const colors = [
     [230, 126, 34],
     [52, 152, 219],
     [155, 89, 182],
-    [236, 240, 241],
-    [52, 73, 94],
-    [149, 165, 166]
+    [52, 73, 94]
 ];
 let webMap;
 let locationControl;
@@ -96,27 +95,8 @@ function createMarker(latlng, color) {
         }
     });
 }
-<<<<<<< HEAD
-class SimpleControl {
-    constructor(map, position, id) {
-        const instance = this;
-        this.map = map;
-        this.div = document.createElement('div');
-        this.div.id = id;
-        this.div.addEventListener("click", function (event) {
-            instance.click(this, event);
-        });
-        //does not work :-(
-        this.div.addEventListener('gesturestart', function (event) {
-            event.preventDefault();
-        }, false);
-        webMap.controls[position].push(this.div);
-    }
-    click(div, ev) { }
-=======
 function createMarkers(locs, color) {
     return locs.map(l => createMarker(mkLatLng(l.lat, l.lng), color));
->>>>>>> 3bcd053431ae301a74a74ed1077b24a34e1239af
 }
 function geoError() {
     locationControl.error(true);
@@ -133,14 +113,16 @@ function getPosition(callback, error) {
         geoError();
 }
 function colorRGB(color) {
-    return "rgb(" + colors[color][0] + "," + colors[color][1] + "," + colors[color][2] + ")";
+    if (color > -1)
+        return "rgb(" + colors[color][0] + "," + colors[color][1] + "," + colors[color][2] + ")";
+    else
+        return "rgb(" + nocolor[0] + "," + nocolor[1] + "," + nocolor[2] + ")";
 }
 function generateUserImg(user, color = -1) {
     if (user.icon) {
         const img = document.createElement('img');
         img.src = user.icon;
-        if (color >= 0)
-            img.setAttribute("style", "border: 4px solid " + colorRGB(color));
+        img.setAttribute("style", "border: 4px solid " + colorRGB(color));
         return img;
     }
     else {
@@ -148,8 +130,7 @@ function generateUserImg(user, color = -1) {
         const name = user.name.split(" ");
         img.classList.add("profileImageID");
         img.innerText = name[0][0] + name[name.length - 1][0];
-        if (color >= 0)
-            img.setAttribute("style", "background-color: " + colorRGB(color));
+        img.setAttribute("style", "background-color: " + colorRGB(color));
         return img;
     }
 }

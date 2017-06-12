@@ -172,6 +172,11 @@ class SubscriptionIcon extends SimpleControl {
         this.el.classList.add("hidden")
     }
 
+    remove() {
+        this.hide()
+        this.el.remove()
+    }
+
     addLocation(latlng: google.maps.LatLng) {
         const marker = createMarker(latlng, this.color)
         this.markers.push(marker)
@@ -243,6 +248,7 @@ class SearchBar extends SimpleControl {
     }
 
     updateUsers(users: Tables.User[]) {
+        console.log("hello")
         this.cleanUsers()
         this.users = users
         this.users.forEach(user => {
@@ -332,60 +338,57 @@ class SearchBar extends SimpleControl {
         subscribe.classList.add("subscribe")
 
         const subbtn = document.createElement("div")
-        if (Subscriptions.subIndex(user._id) > -1) {
-            subbtn.classList.add("unsubbtn")
-        } else {
-            subbtn.classList.add("subbtn")
-            }
-        
+        subbtn.classList.add("subbtn")
+
         const subtext = document.createElement("p")
         subtext.classList.add("buttonText")
         subtext.classList.add("yAlign")
+
         if (Subscriptions.subIndex(user._id) > -1) {
-            subtext.innerText = "SUBSCRIBED"
-            
+            subbtn.classList.add("active")
+            subtext.innerText = "SUBSCRIBED"    
         } else {
+            subbtn.classList.remove("active")
             subtext.innerText = "SUBSCRIBE"
-        } 
-
-
+        }
+        
         $(subbtn).click(() => {
-            if(Subscriptions.subIndex(user._id) < -1) {
+            if(Subscriptions.subIndex(user._id) > -1) {
                 Sockets.manageSubscription(user._id, false)
-                subbtn.classList.remove("unsubbtn")
-                subbtn.classList.add("subbtn")
+                subbtn.classList.remove("active")
                 subtext.innerText = "SUBSCRIBE"
-                visibilityimg.setAttribute("src", "icons/ClosedEye@2x.png")
             } else {
                 Sockets.manageSubscription(user._id, true)
-                subbtn.classList.remove("subbtn")
-                subbtn.classList.add("unsubbtn")
-                subtext.innerText = "SUBSCRIBED"
-                visibilityimg.setAttribute("src", "icons/OpenEye@2x.png")
-                
+                subbtn.classList.add("active")
+                subtext.innerText = "SUBSCRIBED" 
             }
-            console.log(Subscriptions.subIndex(user._id))
         })
-        
-        //add subscription text handling 
-        //if user is already subscribed - show subscribed
-        //else show subscribe
+
+        const fullUser = Subscriptions.get(user._id)
 
         const visibility = document.createElement("div")
         visibility.classList.add("visibility")
 
+        $(visibility).click(() => {
+            if(fullUser.icon.hidden) {
+                fullUser.icon.show()
+                visibilityimg.setAttribute("src", "icons/OpenEye@2x.png")
+            }
+            else {
+                fullUser.icon.hide()
+                visibilityimg.setAttribute("src", "icons/ClosedEye@2x.png")
+            }
+        })
+
         const visibilityimg = document.createElement("img")
         visibilityimg.setAttribute("id", "visibilityimg")
-        if (Subscriptions.subIndex(user._id) > -1) {
+
+        if (fullUser && !fullUser.icon.hidden) {
             visibilityimg.setAttribute("src", "icons/OpenEye@2x.png")
         } else {
             visibilityimg.setAttribute("src", "icons/ClosedEye@2x.png")
-        }
+        }    
 
-        console.log(Subscriptions.subIndex(user._id))
-    
-
-    
         const number = document.createElement("div")
         number.innerText = Subscriptions.getLocations(user._id).length.toString()
         number.setAttribute("id", "Number")
@@ -397,7 +400,6 @@ class SearchBar extends SimpleControl {
 
         subbtn.appendChild(subtext)
         subscribe.appendChild(subbtn)
-
 
         visibility.appendChild(visibilityimg)
 

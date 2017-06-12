@@ -28,6 +28,7 @@ var Sockets;
         }
         else if (!subsciption && index >= 0) {
             SocketHandler.socket.emit(SocketIDs.SUBSCRIBE_MANAGE, to, subsciption);
+            Subscriptions.remove(to);
         }
     }
     Sockets.manageSubscription = manageSubscription;

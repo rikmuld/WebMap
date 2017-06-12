@@ -27,4 +27,15 @@ var Subscriptions;
         return fullUser ? fullUser.user.locations : [];
     }
     Subscriptions.getLocations = getLocations;
+    function get(usr) {
+        const index = subIndex(usr);
+        return index == -1 ? null : Subscriptions.subscriptions[subIndex(usr)];
+    }
+    Subscriptions.get = get;
+    function remove(usr) {
+        const index = subIndex(usr);
+        Subscriptions.subscriptions[index].icon.remove();
+        Subscriptions.subscriptions.splice(index, 1);
+    }
+    Subscriptions.remove = remove;
 })(Subscriptions || (Subscriptions = {}));
