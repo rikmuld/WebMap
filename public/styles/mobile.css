@@ -1,3 +1,190 @@
 #searchbar {
   width: calc(100vw - 58px);
 }
+#logincard {
+  padding-top: 30px;
+  padding-bottom: 30px;
+  border-radius: 4px;
+}
+@media only screen and (orientation: portrait) {
+  #logincard {
+    width: 250px;
+  }
+}
+#webmap {
+  font-family: 'Roboto', sans-serif;
+  text-align: center;
+  display: block;
+  font-size: 2rem;
+  font-weight: 200;
+  color: #fff;
+  margin-bottom: 100px;
+  margin-top: 10px;
+}
+@media only screen and (max-height: 380px) {
+  #webmap {
+    margin-bottom: 30px;
+  }
+}
+@media only screen and (max-height: 450px) and (min-height: 380px) {
+  #webmap {
+    margin-bottom: 55px;
+  }
+}
+@media only screen and (max-height: 520px) and (min-height: 450px) {
+  #webmap {
+    margin-bottom: 80px;
+  }
+}
+#logo {
+  width: 130px;
+  display: block;
+  height: auto;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 13%;
+}
+.subscriptions {
+  height: 100% /* 100% Full-height */;
+  width: 0 /* 0 width - change this with JavaScript */;
+  position: fixed /* Stay in place */;
+  z-index: -1 /* Stay on top */;
+  top: 0;
+  left: 0;
+  background-color: #fff /* Black*/;
+  overflow-x: hidden /* Disable horizontal scroll */;
+  padding-top: 60px /* Place content 60px from the top */;
+  transition: 0.5s /* 0.5 second transition effect to slide in the sidenav */;
+  display: inline-block;
+}
+#hamburger {
+  background-color: #fff;
+  height: 48px;
+  width: 48px;
+  margin: 10px;
+  font-size: 20pt;
+  text-align: center;
+  line-height: 48px;
+  cursor: pointer;
+}
+.TopNav {
+  display: inline-block;
+  width: 500px;
+}
+#closebtn {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  margin: 10px;
+  top: 0;
+  font-size: 36px;
+  text-align: center;
+  line-height: 48px;
+}
+input:focus {
+  outline: none;
+}
+#NavSearch {
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  left: 68px;
+  margin-top: 10px;
+  width: 392px;
+  height: 48px;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-bottom: 2px solid;
+  font-size: 15pt;
+  line-height: 1;
+  border-color: #ddd;
+}
+.text {
+  display: inline-block;
+  margin-left: 10px;
+  width: 200px;
+}
+#subHeadding {
+  margin-bottom: 15px;
+}
+#subHeadding:after {
+  content: "";
+  display: block;
+  width: 450px;
+  padding-top: 10px;
+  border-bottom: 1px solid #ddd;
+}
+.peopleOuter {
+  margin: 10px;
+}
+.person {
+  width: 440px;
+  height: 80px;
+  margin-left: 10px;
+  padding: 1px;
+}
+.person .user {
+  float: left;
+}
+#Name {
+  font-size: 15px;
+  line-height: 2;
+  font-weight: 600;
+}
+#Number {
+  font-size: 13px;
+  color: #ddd;
+}
+.subscribe {
+  width: 115px;
+  display: inline-block;
+  cursor: pointer;
+  cursor: pointer;
+}
+.subbtn {
+  background-color: #d74d46;
+  border-radius: 3px;
+  width: 115px;
+  height: 28px;
+  display: inline-block;
+}
+.unsubbtn {
+  background-color: #ddd;
+  border-radius: 3px;
+  width: 115px;
+  height: 28px;
+  display: inline-block;
+}
+.buttonText {
+  text-align: center;
+  margin-top: auto;
+  margin-bottom: auto;
+  color: #fff;
+  weight: 500;
+  font-size: 15px;
+}
+.visibility {
+  display: inline-block;
+  width: 35px;
+  margin-left: 25px;
+}
+#visibilityimg {
+  width: 35px;
+  filter: brightness(0.4) contrast(130%) hue-rotate(30deg);
+  display: inline-block;
+}
+.flexbox {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-flow: column;
+}
+.settings {
+  position: absolute;
+  bottom: 0;
+  z-index: 2;
+  height: 60px;
+  width: 100%;
+  background-color: #00f;
+}

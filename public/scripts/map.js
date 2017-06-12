@@ -5,74 +5,98 @@ const LOCATION_BOX = "myLocation";
 const ADD_ICON = "addIcon";
 const STYLE = [
     {
-        "featureType": "road.highway",
-        "stylers": [
-            {
-                "color": "#ffc023"
-            },
-            {
-                "visibility": "simplified"
-            }
+        featureType: "road.highway",
+        stylers: [
+            { color: "#ffd082" },
+            { visibility: "simplified" }
+        ]
+    }, {
+        featureType: "water",
+        stylers: [
+            { color: "#8fe5fb" }
         ]
     },
     {
-        "featureType": "water",
-        "stylers": [
-            {
-                "color": "#98d8ee"
-            }
+        featureType: "water",
+        elementType: "geometry.fill",
+        stylers: [
+            { color: "#8fe5fb" }
         ]
-    },
-    {
-        "featureType": "water",
-        "elementType": "geometry.fill",
-        "stylers": [
-            {
-                "color": "#a1e3f8"
-            }
+    }, {
+        featureType: "road.highway",
+        elementType: "labels",
+        stylers: [
+            { visibility: "off" }
         ]
     }
 ];
+const marker = `M11.591,32.564c0,0 11.14,-14.605 11.14,-19.657c0,-6.148 -4.992,-11.139 -11.14,-11.139c-6.148,0 -11.14,4.991 -11.14,11.139c0,5.052 11.14,19.657
+ 11.14,19.657Zm0,-26.802c3.147,0 5.702,2.555 5.702,5.702c0,3.147 -2.555,5.702 -5.702,5.702c-3.147,0 -5.702,-2.555 -5.702,-5.702c0,-3.147 2.555,-5.702 5.702,-5.702Z`;
+const colors = [
+    [231, 76, 60],
+    [26, 188, 156],
+    [241, 196, 15],
+    [46, 204, 113],
+    [230, 126, 34],
+    [52, 152, 219],
+    [155, 89, 182],
+    [236, 240, 241],
+    [52, 73, 94],
+    [149, 165, 166]
+];
 let webMap;
+let locationControl;
+let serachbar;
+let addLocation;
+let sideNav;
 function initMap() {
     const UTWENTE = new google.maps.LatLng(52.241033, 6.852413);
     const TOKYO = new google.maps.LatLng(35.652832, 139.839478);
+    const NEWYORK = new google.maps.LatLng(40.730610, -73.935242);
     webMap = new google.maps.Map(document.getElementById(MAP), {
         center: TOKYO,
-        zoom: 12,
+        zoom: 14,
         zoomControl: true,
         zoomControlOptions: {
-            position: google.maps.ControlPosition.TOP_LEFT
+            position: google.maps.ControlPosition.BOTTOM_CENTER
         },
         styles: STYLE,
-        panControl: false,
+        panControl: true,
         streetViewControl: true,
         streetViewControlOptions: {
-            position: google.maps.ControlPosition.TOP_LEFT
+            position: google.maps.ControlPosition.BOTTOM_CENTER
         },
         mapTypeControl: false,
         overviewMapControl: false
     });
-    const locationControl = new LocationControl(webMap, google.maps.ControlPosition.LEFT_TOP, LOCATION_BOX);
-    const serachbar = new SearchBar(webMap, google.maps.ControlPosition.TOP_LEFT, SEARCH_BOX);
-    const addLocation = new AddLocation(webMap, google.maps.ControlPosition.RIGHT_BOTTOM, ADD_ICON, locationControl);
+    sideNav = new SideNav(webMap, google.maps.ControlPosition.TOP_LEFT);
+    locationControl = new LocationControl(webMap, google.maps.ControlPosition.BOTTOM_CENTER, LOCATION_BOX);
+    serachbar = new SearchBar(webMap, google.maps.ControlPosition.TOP_LEFT, SEARCH_BOX);
+    addLocation = new AddLocation(webMap, google.maps.ControlPosition.RIGHT_BOTTOM, ADD_ICON);
+    //const logout = new Logout(webMap, google.maps.ControlPosition.RIGHT_TOP)
     locationControl.act();
-    // var mouseLatLng = webMap.addListener('click', function (e) {
-    //     if (toggleButton.checked) {
-    //         markerData.push(placeMarker(e.latLng, webMap)),
-    //             console.log(markerData)
-    //     }
-    // })
+    Sockets.getLocations();
 }
 function toLatlon(pos) {
     return new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
 }
-function placeMarker(map, latlng) {
+function mkLatLng(lat, lng) {
+    return new google.maps.LatLng(lat, lng);
+}
+function createMarker(latlng, color) {
     return new google.maps.Marker({
         position: latlng,
-        map: map
+        icon: {
+            path: marker,
+            fillColor: colorRGB(color),
+            fillOpacity: 1,
+            strokeWeight: 1,
+            scale: 1.3,
+            anchor: new google.maps.Point(11.4, 33),
+        }
     });
 }
+<<<<<<< HEAD
 class SimpleControl {
     constructor(map, position, id) {
         const instance = this;
@@ -89,87 +113,43 @@ class SimpleControl {
         webMap.controls[position].push(this.div);
     }
     click(div, ev) { }
+=======
+function createMarkers(locs, color) {
+    return locs.map(l => createMarker(mkLatLng(l.lat, l.lng), color));
+>>>>>>> 3bcd053431ae301a74a74ed1077b24a34e1239af
 }
-class AddLocation extends SimpleControl {
-    constructor(map, position, id, loc) {
-        super(map, position, id);
-        this.location = loc;
-    }
-    click(div, ev) {
-        navigator.geolocation.getCurrentPosition(pos => placeMarker(this.map, toLatlon(pos)));
-        this.location.act();
-    }
+function geoError() {
+    locationControl.error(true);
+    console.log("Geolocation is not available!");
 }
-class LocationControl extends SimpleControl {
-    constructor(map, position, id) {
-        super(map, position, id);
+function getPosition(callback, error) {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(pos => {
+            locationControl.error(false);
+            callback(pos);
+        }, geoError);
+    }
+    else
+        geoError();
+}
+function colorRGB(color) {
+    return "rgb(" + colors[color][0] + "," + colors[color][1] + "," + colors[color][2] + ")";
+}
+function generateUserImg(user, color = -1) {
+    if (user.icon) {
         const img = document.createElement('img');
-        img.src = "http://maps.gstatic.com/tactile/mylocation/mylocation-sprite-2x.png";
-        this.div.appendChild(img);
+        img.src = user.icon;
+        if (color >= 0)
+            img.setAttribute("style", "border: 4px solid " + colorRGB(color));
+        return img;
     }
-    act() {
-        if (navigator.geolocation) {
-            this.div.firstElementChild.classList.remove("error");
-            navigator.geolocation.getCurrentPosition(position => webMap.setCenter(toLatlon(position)));
-        }
-        else {
-            this.div.firstElementChild.classList.add("error");
-        }
-    }
-    click(div, ev) {
-        this.act();
-    }
-    error(error) {
-        if (error)
-            this.div.firstElementChild.classList.add("error");
-        else
-            this.div.firstElementChild.classList.remove("error");
-    }
-}
-class SearchBar extends SimpleControl {
-    constructor(map, position, id) {
-        super(map, position, id);
-        this.markers = [];
-        const input = document.createElement('input');
-        input.placeholder = "Search for places, markers, users, tags...";
-        this.div.appendChild(input);
-        this.search = new google.maps.places.SearchBox(input);
-        const instance = this;
-        map.addListener('bounds_changed', () => instance.search.setBounds(map.getBounds()));
-        this.search.addListener('places_changed', () => instance.searchChanged());
-    }
-    searchChanged() {
-        const instance = this;
-        const places = this.search.getPlaces();
-        if (places.length == 0) {
-            return;
-        }
-        this.markers.forEach(marker => marker.setMap(null));
-        this.markers = [];
-        const bounds = new google.maps.LatLngBounds();
-        places.forEach(place => {
-            if (!place.geometry) {
-                console.log("Returned place contains no geometry");
-                return;
-            }
-            var icon = {
-                url: place.icon,
-                size: new google.maps.Size(71, 71),
-                origin: new google.maps.Point(0, 0),
-                anchor: new google.maps.Point(17, 34),
-                scaledSize: new google.maps.Size(25, 25)
-            };
-            this.markers.push(new google.maps.Marker({
-                map: this.map,
-                icon: icon,
-                title: place.name,
-                position: place.geometry.location
-            }));
-            if (place.geometry.viewport)
-                bounds.union(place.geometry.viewport);
-            else
-                bounds.extend(place.geometry.location);
-        });
-        this.map.fitBounds(bounds);
+    else {
+        const img = document.createElement('div');
+        const name = user.name.split(" ");
+        img.classList.add("profileImageID");
+        img.innerText = name[0][0] + name[name.length - 1][0];
+        if (color >= 0)
+            img.setAttribute("style", "background-color: " + colorRGB(color));
+        return img;
     }
 }

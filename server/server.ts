@@ -4,9 +4,11 @@ import * as socket from 'socket.io'
 import * as path from 'path'
 import * as stylus from 'stylus'
 import * as bodyParser from 'body-parser'
+import * as passport from 'passport'
 
-import {Setup} from "./Setup"
-import {Config} from "./Config"
+import { Setup } from "./Setup"
+import { Config } from "./config"
+import { SocketHandler } from "./sockets/socketHandler"
 
 const app = express()
 const server = http.createServer(app)
@@ -24,8 +26,29 @@ Setup.setupSession(app, io)
 Setup.addAuthMiddleware(app)
 Setup.addAsMiddleware(app, "db", db)
 
-app.get("*", (req, res) => {
-    res.render("map")
+SocketHandler.bindHandlers(app, io)
+
+//put in specific routes file
+const AUTH = "/auth/google"
+const AUTH_CALLBACK = AUTH + "/callback"
+
+app.get(AUTH, passport.authenticate('google', {
+    scope: ['https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/plus.profile.emails.read']
+}))
+
+app.get(AUTH_CALLBACK, passport.authenticate('google', {
+    successRedirect: '/',
+    failureRedirect: '/'
+}))
+
+app.get("/logout", (req, res) => {
+    req.logout()
+    res.redirect("/")
 })
 
-server.listen(3000)
+app.get("*", (req, res) => {
+    res.render("map", { user: req.user })
+})
+//up to here
+
+Setup.startServer(server)

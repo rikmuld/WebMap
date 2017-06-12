@@ -1,7 +1,4 @@
-//save location functionality: desktop 
-// get longitude and latitude from mouse position on click
-// place marker at longitude and latitude
-// save location functionality: mobile
-// get user longitude and latitude from geolocation data 
-// place marker at longitude and latitude
-console.log("non empty file now :)");
+SocketHandler.init();
+function isMobile() {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+}

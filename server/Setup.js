@@ -10,20 +10,12 @@ const passport = require("passport");
 const redis = require("redis");
 const redisConnect = require("connect-redis");
 const config_1 = require("./config");
+const tables_1 = require("./database/tables");
+const tableHelper_1 = require("./database/tableHelper");
 const authGoogle = require('passport-google-oauth2');
 const useRedis = config_1.Config.session.redis;
 const redisStore = useRedis ? redisConnect(session) : null;
 const redisClient = useRedis ? redis.createClient() : null;
-//get rid of all other info in profile
-function simpleProfile(profile) {
-    return {
-        email: profile.email,
-        name: {
-            familyName: profile.name.familyName,
-            givenName: profile.name.givenName
-        }
-    };
-}
 var Setup;
 (function (Setup) {
     function startServer(server) {
@@ -52,7 +44,7 @@ var Setup;
                 host: 'localhost',
                 port: 6379,
                 client: redisClient,
-                ttl: 86400
+                ttl: 7 * 24 * 3600
             });
         }
         const sessionMiddle = session(sessionData);
@@ -67,6 +59,7 @@ var Setup;
         db.once('open', function (callback) {
             console.log("Connected to database");
         });
+        tables_1.Tables.initTables();
         return db;
     }
     Setup.setupDatabase = setupDatabase;
@@ -74,18 +67,22 @@ var Setup;
         const googleLogin = {
             clientID: googleID,
             clientSecret: googleSecret,
-            callbackURL: "http://" + config_1.Config.auth.callback + "/auth/google/callback",
+            callbackURL: config_1.Config.auth.callback + "/auth/google/callback",
             passReqToCallback: true
         };
         const handleLogin = (request, accessToken, refreshToken, profile, done) => {
             process.nextTick(() => {
-                //Users.getByGProfile(profile).then(u => done(null, Users.simplify(u)), e => done(null, null))
-                //save to db then get
-                done(null, simpleProfile(profile));
+                const icon = profile._json.image.isDefault ? null : profile._json.image.url;
+                const newUser = tables_1.TableData.User.user(profile.email, profile.displayName, icon); //rather would have this lazy, also img is size 50px, better set to whatever size needed
+                const findUser = { id: profile.email };
+                tableHelper_1.TableHelper.createOrReturn(tables_1.Tables.User, findUser, newUser).then(user => done(null, user), err => done(err, null));
             });
         };
-        passport.serializeUser((user, done) => done(null, user));
-        passport.deserializeUser((user, done) => done(null, user));
+        passport.serializeUser((user, done) => done(null, user.id));
+        passport.deserializeUser((userId, done) => {
+            const query = tables_1.Tables.User.findOne({ id: userId }).select("-locations");
+            query.exec().then(user => done(null, user), err => done(err, null));
+        });
         passport.use(new authGoogle.Strategy(googleLogin, handleLogin));
     }
     Setup.setupAuthGoogle = setupAuthGoogle;

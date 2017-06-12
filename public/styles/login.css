@@ -1,0 +1,144 @@
+body,
+html {
+  height: 100%;
+}
+#map {
+  background: url("/icons/map.jpg");
+  background-size: cover;
+  background-position: 50%;
+  filter: brightness(0.4) contrast(130%);
+}
+#logo {
+  animation: fade 0.5s cubic-bezier(0.39, 0.575, 0.565, 1) 0.7s both;
+  filter: saturate(150%);
+}
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.login {
+  display: block;
+  background: #fff;
+  width: 190px;
+  white-space: nowrap;
+  height: 44px;
+  margin-right: auto;
+  margin-left: auto;
+  border-radius: 3px;
+  animation: fade 1.4s cubic-bezier(0.39, 0.575, 0.565, 1) 1.6s both;
+}
+.login:hover {
+  box-shadow: 4px 4px 20px rgba(0,0,0,0.6);
+}
+.googleicon {
+  display: inline-block;
+  float: left;
+  vertical-align: middle;
+  height: 42px;
+  width: 42px;
+}
+.buttontext {
+  font-size: 14px;
+  padding-left: 50px;
+  padding-right: 42px;
+  font-weight: bold;
+  margin-bottom: 0px;
+}
+a {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  text-decoration: none;
+  color: #808080;
+}
+a:hover {
+  text-decoration: none;
+  color: inherit;
+}
+#userlogin {
+  margin: 0 auto;
+  text-align: center;
+}
+#webmap {
+  animation: expand 1.2s cubic-bezier(0.215, 0.61, 0.355, 1) 1.6s both;
+}
+@-moz-keyframes fade {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@-webkit-keyframes fade {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@-o-keyframes fade {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes fade {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@-moz-keyframes expand {
+  0% {
+    letter-spacing: -0.5rem;
+    opacity: 0;
+  }
+  40% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@-webkit-keyframes expand {
+  0% {
+    letter-spacing: -0.5rem;
+    opacity: 0;
+  }
+  40% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@-o-keyframes expand {
+  0% {
+    letter-spacing: -0.5rem;
+    opacity: 0;
+  }
+  40% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes expand {
+  0% {
+    letter-spacing: -0.5rem;
+    opacity: 0;
+  }
+  40% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 1;
+  }
+}

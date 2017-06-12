@@ -2,11 +2,51 @@
 
 block body
 	#map
-	//
-		label#togglebutton.switch
-			input#markertoggle(type="checkbox")
-			.slider.round
-			
+	if !user
+		.container.yAlign
+			.row#logincard
+				.col-lg-5.col-sm-12
+					img#logo(src="icons/logo_255.png")
+				.col-lg-7.col-sm-12#brand
+					.yAlignDesc
+						.col-sm-12
+							h1#webmap WebMap
+						.col-sm-12
+							a.login.fade-in(href="/auth/google")
+								img.googleicon(src="icons/googlelogo.svg")
+								.yAlign
+									p.buttontext Sign in with google
+
+		link(rel='stylesheet' href='styles/login.css' type='text/css')
+	else
+		.subscriptions#mySubscriptions
+			.TopNav
+				a#closebtn(href='javascript:sideNav.close()') ×
+				input#NavSearch(type='search', placeholder="Search for people")
+			.subcription
+			.peopleOuter
+				h2#subHeadding Subscriptions
+				.people
+					.person
+						img.profileImageID(src="icons/circle.png")
+						.text.yAlign
+							#Name Oliver Ford 
+							#Number 30
+						.subscribe
+							.subbtn
+								p.buttonText.yAlign SUBSCRIBE
+						.visibility
+							img#visibilityimg(src="icons/OpenEye@2x.png")
+			.settings
+				a(href="/logout")
+					#logoutButton
+						p.LogoutbuttonText.yAlign Logout
+
+
 block append scripts
-	script(src="scripts/map.js")
-	script(src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDakO19FB47AHux8bCnn4kCQkj2wU8o9cE&callback=initMap&libraries=places")
+	if user
+		script(src="scripts/buttons.js")
+		script(src="scripts/sidenav.js")
+		script(src="scripts/map.js")
+		script(src="scripts/subscriptions.js")
+		script(src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDakO19FB47AHux8bCnn4kCQkj2wU8o9cE&callback=initMap&libraries=places")
