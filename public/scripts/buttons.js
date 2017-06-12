@@ -262,14 +262,35 @@ class SearchBar extends SimpleControl {
         const usname = document.createElement("div");
         usname.innerText = user.name;
         usname.setAttribute("id", "Name");
+        const subscribe = document.createElement("div");
+        subscribe.classList.add("subscribe");
+        const subbtn = document.createElement("div");
+        subbtn.classList.add("subbtn");
+        const subtext = document.createElement("p");
+        subtext.classList.add("buttonText");
+        subtext.classList.add("yAlign");
+        subtext.innerText = "SUBSCRIBE";
+        //add subscription text handling 
+        //if user is already subscribed - show subscribed
+        //else show subscribe
+        const visibility = document.createElement("div");
+        visibility.classList.add("visibility");
+        const visibilityimg = document.createElement("img");
+        visibilityimg.setAttribute("id", "visibilityimg");
+        visibilityimg.setAttribute("src", "icons/OpenEye@2x.png");
         const number = document.createElement("div");
         number.innerText = Subscriptions.getLocations(user._id).length.toString();
         number.setAttribute("id", "Number");
         img.appendChild(generateUserImg(user, Subscriptions.subIndex(user._id)));
         info.appendChild(usname);
         info.appendChild(number);
+        subbtn.appendChild(subtext);
+        subscribe.appendChild(subbtn);
+        visibility.appendChild(visibilityimg);
         el.appendChild(img);
         el.appendChild(info);
+        el.appendChild(subscribe);
+        el.appendChild(visibility);
         return el;
     }
     locationChanged() {
