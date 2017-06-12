@@ -113,16 +113,22 @@ class SideNav extends SimpleControl {
         if (this.isOpen) this.close()
         else this.open() 
     }
-
+        
     open() {
-        document.getElementById("mySubscriptions").style.width = "408px";
-        this.isOpen = true
+        if (window.matchMedia("(min-width: 500px)").matches) {
+            document.getElementById("mySubscriptions").style.width = "408px";
+            this.isOpen = true
+        } else {
+            document.getElementById("mySubscriptions").style.width = "100%";
+            this.isOpen = true
+        }
     }
 
     close() {
         document.getElementById("mySubscriptions").style.width = "0";
         this.isOpen = false
         serachbar.userSearch.value = ""
+        serachbar.cleanUsers()
     }
 }
 
@@ -201,7 +207,20 @@ class SearchBar extends SimpleControl {
         super(map, position, id)
 
         const input = document.createElement('input')
-        input.placeholder = "Search for places, markers, users, tags..."
+        window.addEventListener("resize", (e) =>{
+            if (window.innerWidth > 420) {
+                input.placeholder = "Search for places, markers, users, tags...";
+            } else {
+                input.placeholder = "Search...";
+            }
+        })
+
+        if (window.innerWidth > 420) {
+            input.placeholder = "Search for places, markers, users, tags...";
+        } else {
+            input.placeholder = "Search...";
+        }
+        
 
         this.el.appendChild(input)
         this.search = new google.maps.places.SearchBox(input)
@@ -255,6 +274,7 @@ class SearchBar extends SimpleControl {
             if(sideNav.isOpen){
                 const pac = this.generateSubscriptionElements(user)
                 this.getUserContainer().append(pac)
+                this.getUserContainer().append(document.createElement("hr"))
             } else {
                 const pac = this.generatePacUserItem(user)
                 this.getPacContainer().prepend(pac) 
@@ -336,6 +356,7 @@ class SearchBar extends SimpleControl {
 
         const subscribe = document.createElement("div")
         subscribe.classList.add("subscribe")
+        subscribe.classList.add("yAlign")
 
         const subbtn = document.createElement("div")
         subbtn.classList.add("subbtn")
@@ -346,48 +367,44 @@ class SearchBar extends SimpleControl {
 
         if (Subscriptions.subIndex(user._id) > -1) {
             subbtn.classList.add("active")
-            subtext.innerText = "SUBSCRIBED"    
+            subtext.innerText = "SUBSCRIBED"   
         } else {
             subbtn.classList.remove("active")
             subtext.innerText = "SUBSCRIBE"
         }
         
         $(subbtn).click(() => {
-            if(Subscriptions.subIndex(user._id) > -1) {
+            const sub = Subscriptions.subIndex(user._id) > -1
+            if(sub) {
                 Sockets.manageSubscription(user._id, false)
                 subbtn.classList.remove("active")
-                subtext.innerText = "SUBSCRIBE"
             } else {
                 Sockets.manageSubscription(user._id, true)
-                subbtn.classList.add("active")
-                subtext.innerText = "SUBSCRIBED" 
+                subbtn.classList.add("active")                
             }
+            subtext.innerText = this.getSubscribeText(sub)
         })
 
         const fullUser = Subscriptions.get(user._id)
 
         const visibility = document.createElement("div")
         visibility.classList.add("visibility")
+        visibility.classList.add("yAlign")
 
-        $(visibility).click(() => {
+        $(img).click(() => {
             if(fullUser.icon.hidden) {
                 fullUser.icon.show()
-                visibilityimg.setAttribute("src", "icons/OpenEye@2x.png")
+                img.classList.remove("hidden")
             }
             else {
                 fullUser.icon.hide()
-                visibilityimg.setAttribute("src", "icons/ClosedEye@2x.png")
+                img.classList.add("hidden")
             }
         })
 
-        const visibilityimg = document.createElement("img")
-        visibilityimg.setAttribute("id", "visibilityimg")
-
-        if (fullUser && !fullUser.icon.hidden) {
-            visibilityimg.setAttribute("src", "icons/OpenEye@2x.png")
-        } else {
-            visibilityimg.setAttribute("src", "icons/ClosedEye@2x.png")
-        }    
+        if(fullUser && fullUser.icon.hidden) {
+            img.classList.add("hidden")
+        }
 
         const number = document.createElement("div")
         number.innerText = Subscriptions.getLocations(user._id).length.toString()
@@ -401,14 +418,27 @@ class SearchBar extends SimpleControl {
         subbtn.appendChild(subtext)
         subscribe.appendChild(subbtn)
 
-        visibility.appendChild(visibilityimg)
-
         el.appendChild(img)
         el.appendChild(info)
         el.appendChild(subscribe)
         el.appendChild(visibility)
 
         return el
+    }
+
+    getSubscribeText(sub:boolean):string {
+        // if (sub && (window.innerWidth < 350)) {
+        //     return "S"
+        // }
+        // if (!sub && (window.innerWidth < 350)) {
+        //     return "S"
+        // }
+        if (sub) {
+            return "SUBSCRIBED"
+        } else {
+            return "SUBSCRIBE"
+        }
+
     }
 
     locationChanged() {

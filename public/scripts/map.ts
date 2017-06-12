@@ -4,6 +4,7 @@ const MAP = "map"
 const SEARCH_BOX = "searchbar"
 const LOCATION_BOX = "myLocation"
 const ADD_ICON = "addIcon"
+const MENU = "hanburger"
 const STYLE = [
     {
         featureType: "road.highway",
