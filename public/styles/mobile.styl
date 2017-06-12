@@ -39,23 +39,29 @@
     border-radius 13%
 
 #NavSearch
-    width calc(100vw - 78px)
+    width 310px
 
-@media only screen and (min-width: 500px)
+@media only screen and (max-width: 500px)
     #NavSearch
-        width 310px
+        width calc(100vw - 78px)
 
+    .peopleOuter
+        padding-right 20px
     
-// @media only screen and (max-width: 350px)
-//     .subscribe
-//         width 50px
-//         margin-right 20px
-//     .subbtn
-//         border-radius 50%
-//         width 42px
-//         height 42px
+    .subscriptions.active
+        width 100%
+
+@media only screen and (max-width: 350px)
+    .subbtn
+        border-radius 50%
+        width 42px
+        height 42px
     
-//     .subbtn.active
-//         border-radius 50%
-//         width 42px
-//         height 42px
+    .subbtn.active
+        border-radius 50%
+        width 42px
+        height 42px
+
+    .buttonText
+        font-size 20px 
+        line-height 42px

@@ -92,20 +92,18 @@ class SideNav extends SimpleControl {
             this.open();
     }
     open() {
-        if (window.matchMedia("(min-width: 500px)").matches) {
-            document.getElementById("mySubscriptions").style.width = "408px";
-            this.isOpen = true;
-        }
-        else {
-            document.getElementById("mySubscriptions").style.width = "100%";
-            this.isOpen = true;
-        }
+        this.isOpen = true;
+        $(".subscriptions").addClass("active");
     }
     close() {
-        document.getElementById("mySubscriptions").style.width = "0";
+        $(".subscriptions").addClass("closing");
+        setTimeout(() => {
+            serachbar.userSearch.value = "";
+            serachbar.cleanUsers();
+            $(".subscriptions").removeClass("active");
+            $(".subscriptions").removeClass("closing");
+        }, 500);
         this.isOpen = false;
-        serachbar.userSearch.value = "";
-        serachbar.cleanUsers();
     }
 }
 class Logout extends SimpleControl {
@@ -165,14 +163,6 @@ class SearchBar extends SimpleControl {
         this.dosearch = 0;
         this.users = [];
         const input = document.createElement('input');
-        window.addEventListener("resize", (e) => {
-            if (window.innerWidth > 420) {
-                input.placeholder = "Search for places, markers, users, tags...";
-            }
-            else {
-                input.placeholder = "Search...";
-            }
-        });
         if (window.innerWidth > 420) {
             input.placeholder = "Search for places, markers, users, tags...";
         }
@@ -183,6 +173,15 @@ class SearchBar extends SimpleControl {
         this.search = new google.maps.places.SearchBox(input);
         this.userSearch = $("#NavSearch").get()[0];
         const instance = this;
+        window.addEventListener("resize", (e) => {
+            if (window.innerWidth > 420) {
+                input.placeholder = "Search for places, markers, users, tags...";
+            }
+            else {
+                input.placeholder = "Search...";
+            }
+            instance.updateUsers(this.getUsers());
+        });
         this.userSearch.addEventListener('input', (e) => instance.userSearchChanged(e));
         input.addEventListener('input', (e) => instance.searchChanged(e));
         input.addEventListener('focus', e => {
@@ -198,6 +197,9 @@ class SearchBar extends SimpleControl {
             if (e.keyCode != 65)
                 e.preventDefault();
         });
+    }
+    getUsers() {
+        return this.users;
     }
     searchChanged(e) {
         this.dosearch += 1;
@@ -296,18 +298,15 @@ class SearchBar extends SimpleControl {
         subbtn.classList.add("subbtn");
         const subtext = document.createElement("p");
         subtext.classList.add("buttonText");
-        subtext.classList.add("yAlign");
-        if (Subscriptions.subIndex(user._id) > -1) {
+        const sub = Subscriptions.subIndex(user._id) > -1;
+        if (sub)
             subbtn.classList.add("active");
-            subtext.innerText = "SUBSCRIBED";
-        }
-        else {
+        else
             subbtn.classList.remove("active");
-            subtext.innerText = "SUBSCRIBE";
-        }
+        subtext.innerText = this.getSubscribeText(sub);
         $(subbtn).click(() => {
-            const sub = Subscriptions.subIndex(user._id) > -1;
-            if (sub) {
+            const sub2 = Subscriptions.subIndex(user._id) > -1;
+            if (sub2) {
                 Sockets.manageSubscription(user._id, false);
                 subbtn.classList.remove("active");
             }
@@ -315,12 +314,10 @@ class SearchBar extends SimpleControl {
                 Sockets.manageSubscription(user._id, true);
                 subbtn.classList.add("active");
             }
-            subtext.innerText = this.getSubscribeText(sub);
+            subtext.innerText = this.getSubscribeText(sub2);
+            this.updateUsers(this.getUsers());
         });
         const fullUser = Subscriptions.get(user._id);
-        const visibility = document.createElement("div");
-        visibility.classList.add("visibility");
-        visibility.classList.add("yAlign");
         $(img).click(() => {
             if (fullUser.icon.hidden) {
                 fullUser.icon.show();
@@ -337,7 +334,10 @@ class SearchBar extends SimpleControl {
         const number = document.createElement("div");
         number.innerText = Subscriptions.getLocations(user._id).length.toString();
         number.setAttribute("id", "Number");
+        const hider = document.createElement("div");
+        hider.classList.add("hider");
         img.appendChild(generateUserImg(user, Subscriptions.subIndex(user._id)));
+        img.appendChild(hider);
         info.appendChild(usname);
         info.appendChild(number);
         subbtn.appendChild(subtext);
@@ -345,17 +345,13 @@ class SearchBar extends SimpleControl {
         el.appendChild(img);
         el.appendChild(info);
         el.appendChild(subscribe);
-        el.appendChild(visibility);
         return el;
     }
     getSubscribeText(sub) {
-        // if (sub && (window.innerWidth < 350)) {
-        //     return "S"
-        // }
-        // if (!sub && (window.innerWidth < 350)) {
-        //     return "S"
-        // }
-        if (sub) {
+        if (window.innerWidth < 350) {
+            return "S";
+        }
+        else if (sub) {
             return "SUBSCRIBED";
         }
         else {

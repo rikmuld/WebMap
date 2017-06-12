@@ -121,16 +121,17 @@ addIconSize = 59px
 
 .subscription
     margin-left 10px
-    .hider
-        background-color transparent
-        width 50px
-        height 50px
-        position absolute
-        top 0px
-        left 0px
-        border-radius 50%
 
-.subscription.hidden
+.hider
+    background-color transparent
+    width 50px
+    height 50px
+    position absolute
+    top 0px
+    left 0px
+    border-radius 50%
+
+.user.hidden
     .hider
         background-color rgba(0, 0, 0, 0.5)
 
@@ -158,7 +159,6 @@ addIconSize = 59px
     line-height 50px
     border-radius 50%
 
-
 .subscriptions
     height 100% /* 100% Full-height */
     width 0 /* 0 width - change this with JavaScript */
@@ -170,6 +170,14 @@ addIconSize = 59px
     overflow-x hidden /* Disable horizontal scroll */
     transition 0.5s /* 0.5 second transition effect to slide in the sidenav */
     display inline-block
+    margin-left 0px
+
+.subscriptions.active
+    width 408px
+
+.subscriptions.closing
+    margin-left -408px
+    transition 0.5s
 
 #hamburger
     background-color white
@@ -181,6 +189,7 @@ addIconSize = 59px
     line-height: 48px 
     cursor pointer
     box-shadow rgba(0,0,0,0.3) 0px 1px 4px -1px
+    @extends .noselect
 
 .TopNav 
     display inline-block
@@ -210,8 +219,7 @@ input:focus
     border-bottom 1px solid #DDD
 
 .peopleOuter
-    margin 10px
-
+    padding 25px
 
 #NavSearch
     display inline-block
@@ -235,7 +243,6 @@ input:focus
 .person
     width 100%
     height 80px
-    margin-left 10px
     
     .user
         float left
@@ -246,13 +253,11 @@ input:focus
     line-height 2
     font-weight 600
 
-
 #Number
     font-size 13px
     color #DDD
 
 .subscribe
-    width 115px
     display block
     cursor pointer
     float right
@@ -279,6 +284,7 @@ input:focus
     color white
     weight 400
     font-size 12px
+    line-height 28px
 
 .settings 
     position relative
@@ -311,20 +317,10 @@ input:focus
     font-size 16px
     line-height 30px
 
-.slide-in-bottom {
-	-webkit-animation slide-in-bottom 0.5s cubic-bezier(0.645, 0.045, 0.355, 1.000) both
-	animation slide-in-bottom 0.5s cubic-bezier(0.645, 0.045, 0.355, 1.000) both
-}
-
-@keyframes slide-in-bottom {
-  0% {
-    -webkit-transform: translateY(1000px);
-            transform: translateY(1000px);
-    opacity: 0;
-  }
-  100% {
-    -webkit-transform: translateY(0);
-            transform: translateY(0);
-    opacity: 1;
-  }
-}
+@keyframes slide-in-bottom
+  0%
+    transform: translateY(1000px)
+    opacity: 0
+  100% 
+    transform: translateY(0)
+    opacity: 1

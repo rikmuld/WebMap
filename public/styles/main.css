@@ -1,5 +1,6 @@
 .noselect,
 .user,
+#hamburger,
 .subbtn {
   user-select: none;
 }
@@ -126,7 +127,7 @@ animation slide-in-bottom 0.3s cubic-bezier(0.645,
 .subscription {
   margin-left: 10px;
 }
-.subscription .hider {
+.hider {
   background-color: transparent;
   width: 50px;
   height: 50px;
@@ -135,7 +136,7 @@ animation slide-in-bottom 0.3s cubic-bezier(0.645,
   left: 0px;
   border-radius: 50%;
 }
-.subscription.hidden .hider {
+.user.hidden .hider {
   background-color: rgba(0,0,0,0.5);
 }
 .user {
@@ -172,6 +173,14 @@ animation slide-in-bottom 0.3s cubic-bezier(0.645,
   overflow-x: hidden /* Disable horizontal scroll */;
   transition: 0.5s /* 0.5 second transition effect to slide in the sidenav */;
   display: inline-block;
+  margin-left: 0px;
+}
+.subscriptions.active {
+  width: 408px;
+}
+.subscriptions.closing {
+  margin-left: -408px;
+  transition: 0.5s;
 }
 #hamburger {
   background-color: #fff;
@@ -212,7 +221,7 @@ input:focus {
   border-bottom: 1px solid #ddd;
 }
 .peopleOuter {
-  margin: 10px;
+  padding: 25px;
 }
 #NavSearch {
   display: inline-block;
@@ -236,7 +245,6 @@ input:focus {
 .person {
   width: 100%;
   height: 80px;
-  margin-left: 10px;
 }
 .person .user {
   float: left;
@@ -251,7 +259,6 @@ input:focus {
   color: #ddd;
 }
 .subscribe {
-  width: 115px;
   display: block;
   cursor: pointer;
   float: right;
@@ -277,6 +284,7 @@ input:focus {
   color: #fff;
   weight: 400;
   font-size: 12px;
+  line-height: 28px;
 }
 .settings {
   position: relative;
@@ -312,54 +320,42 @@ input:focus {
   font-size: 16px;
   line-height: 30px;
 }
-.slide-in-bottom {
-  -webkit-animation: slide-in-bottom 0.5s cubic-bezier(0.645, 0.045, 0.355, 1) both;
-  animation: slide-in-bottom 0.5s cubic-bezier(0.645, 0.045, 0.355, 1) both;
-}
 @-moz-keyframes slide-in-bottom {
   0% {
-    -webkit-transform: translateY(1000px);
     transform: translateY(1000px);
     opacity: 0;
   }
   100% {
-    -webkit-transform: translateY(0);
     transform: translateY(0);
     opacity: 1;
   }
 }
 @-webkit-keyframes slide-in-bottom {
   0% {
-    -webkit-transform: translateY(1000px);
     transform: translateY(1000px);
     opacity: 0;
   }
   100% {
-    -webkit-transform: translateY(0);
     transform: translateY(0);
     opacity: 1;
   }
 }
 @-o-keyframes slide-in-bottom {
   0% {
-    -webkit-transform: translateY(1000px);
     transform: translateY(1000px);
     opacity: 0;
   }
   100% {
-    -webkit-transform: translateY(0);
     transform: translateY(0);
     opacity: 1;
   }
 }
 @keyframes slide-in-bottom {
   0% {
-    -webkit-transform: translateY(1000px);
     transform: translateY(1000px);
     opacity: 0;
   }
   100% {
-    -webkit-transform: translateY(0);
     transform: translateY(0);
     opacity: 1;
   }
