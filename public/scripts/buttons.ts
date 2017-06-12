@@ -115,7 +115,7 @@ class SideNav extends SimpleControl {
     }
 
     open() {
-        document.getElementById("mySubscriptions").style.width = "500px";
+        document.getElementById("mySubscriptions").style.width = "408px";
         this.isOpen = true
     }
 
@@ -332,12 +332,41 @@ class SearchBar extends SimpleControl {
         subscribe.classList.add("subscribe")
 
         const subbtn = document.createElement("div")
-        subbtn.classList.add("subbtn")
-
+        if (Subscriptions.subIndex(user._id) > -1) {
+            subbtn.classList.add("unsubbtn")
+        } else {
+            subbtn.classList.add("subbtn")
+            }
+        
         const subtext = document.createElement("p")
         subtext.classList.add("buttonText")
         subtext.classList.add("yAlign")
-        subtext.innerText = "SUBSCRIBE"
+        if (Subscriptions.subIndex(user._id) > -1) {
+            subtext.innerText = "SUBSCRIBED"
+            
+        } else {
+            subtext.innerText = "SUBSCRIBE"
+        } 
+
+
+        $(subbtn).click(() => {
+            if(Subscriptions.subIndex(user._id) < -1) {
+                Sockets.manageSubscription(user._id, false)
+                subbtn.classList.remove("unsubbtn")
+                subbtn.classList.add("subbtn")
+                subtext.innerText = "SUBSCRIBE"
+                visibilityimg.setAttribute("src", "icons/ClosedEye@2x.png")
+            } else {
+                Sockets.manageSubscription(user._id, true)
+                subbtn.classList.remove("subbtn")
+                subbtn.classList.add("unsubbtn")
+                subtext.innerText = "SUBSCRIBED"
+                visibilityimg.setAttribute("src", "icons/OpenEye@2x.png")
+                
+            }
+            console.log(Subscriptions.subIndex(user._id))
+        })
+        
         //add subscription text handling 
         //if user is already subscribed - show subscribed
         //else show subscribe
@@ -347,7 +376,14 @@ class SearchBar extends SimpleControl {
 
         const visibilityimg = document.createElement("img")
         visibilityimg.setAttribute("id", "visibilityimg")
-        visibilityimg.setAttribute("src", "icons/OpenEye@2x.png")
+        if (Subscriptions.subIndex(user._id) > -1) {
+            visibilityimg.setAttribute("src", "icons/OpenEye@2x.png")
+        } else {
+            visibilityimg.setAttribute("src", "icons/ClosedEye@2x.png")
+        }
+
+        console.log(Subscriptions.subIndex(user._id))
+    
 
     
         const number = document.createElement("div")

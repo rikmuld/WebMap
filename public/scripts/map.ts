@@ -82,7 +82,7 @@ function initMap() {
     serachbar = new SearchBar(webMap, google.maps.ControlPosition.TOP_LEFT, SEARCH_BOX)
     addLocation = new AddLocation(webMap, google.maps.ControlPosition.RIGHT_BOTTOM, ADD_ICON)
     
-    const logout = new Logout(webMap, google.maps.ControlPosition.RIGHT_TOP)
+    //const logout = new Logout(webMap, google.maps.ControlPosition.RIGHT_TOP)
 
     locationControl.act()
     

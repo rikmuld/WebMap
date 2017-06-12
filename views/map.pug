@@ -38,7 +38,10 @@ block body
 						.visibility
 							img#visibilityimg(src="icons/OpenEye@2x.png")
 			.settings
-				a#userLogout.user(href="/logout")
+				a(href="/logout")
+					#logoutButton
+						p.LogoutbuttonText.yAlign Logout
+
 
 block append scripts
 	if user

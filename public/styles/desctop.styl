@@ -61,7 +61,7 @@
 
 .TopNav 
     display inline-block
-    width 500px
+    width 408px
 
 #closebtn
     position absolute
@@ -73,13 +73,16 @@
     text-align center
     line-height: 48px 
 
+input:focus
+    outline none
+
 #NavSearch
     display inline-block
     position absolute
     top 0
     left 68px
     margin-top 10px
-    width 392px
+    width 310px
     height 48px
     border-top none
     border-left none
@@ -87,20 +90,21 @@
     border-bottom 2px solid
     font-size 15pt
     line-height 1
-    color #DDD
+    border-color #DDD
 
 .text
     display inline-block
     margin-left 10px
-    width 200px
+    width 135px
 
 #subHeadding
     margin-bottom 15px
+    margin-left 15px
 
 #subHeadding:after
     content "" 
     display block 
-    width 450px 
+    width 350px 
     padding-top 10px
     border-bottom 1px solid #DDD
 
@@ -108,7 +112,7 @@
     margin 10px
 
 .person
-    width 440px
+    width 373px
     height 80px
     margin-left 10px
     padding 1px
@@ -118,7 +122,7 @@
     
 
 #Name
-    font-size 15px
+    font-size 14px
     line-height 2
     font-weight 600
 
@@ -128,15 +132,27 @@
     color #DDD
 
 .subscribe
-    width 110px
+    width 115px
     display inline-block
+    cursor pointer
+    cursor pointer
+
 .subbtn
     background-color #D74D46
     border-radius 3px
-    width 108px
+    width 100px
     height 28px
     display inline-block
+    
 
+
+.unsubbtn
+    background-color #DDD
+    border-radius 3px
+    width 100px
+    height 28px
+    display inline-block
+    
 
 
 .buttonText
@@ -145,20 +161,19 @@
     margin-bottom auto
     color white
     weight 500
+    font-size 13px
 
 
 .visibility
     display inline-block
     width 35px
-    margin-left 25px
-    margin-right 5px
+    margin-left 10px
 
 #visibilityimg
     width 35px
     filter brightness(0.4) contrast(130%) hue-rotate(30deg)
     display inline-block
    
-
 .flexbox 
     display flex
     justify-content center
@@ -169,11 +184,32 @@
     position absolute
     bottom 0
     z-index 2
-    height 60px
+    height 80px
     width 100%
-    background-color blue
+    background-color white
 
 .yAlignDesc
     position relative
     top 50%
     transform translateY(-50%)
+
+#logoutButton
+    width 130px
+    height 40px
+    margin-top 20px
+    margin-left auto
+    margin-right auto
+    border-radius 2px
+    background-color #9CEDCF
+    text-align center
+    box-shadow 0 1px 4px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)
+
+
+.LogoutbuttonText
+    text-align center
+    margin-top auto
+    margin-bottom auto
+    color white
+    weight 300
+    font-size 24px
+    
