@@ -82,6 +82,7 @@ class SimpleControl {
         this.div.addEventListener("click", function (event) {
             instance.click(this, event);
         });
+        //does not work :-(
         this.div.addEventListener('gesturestart', function (event) {
             event.preventDefault();
         }, false);
