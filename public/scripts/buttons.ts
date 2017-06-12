@@ -254,8 +254,11 @@ class SearchBar extends SimpleControl {
                 this.getPacContainer().prepend(pac) 
             }
         })
-        if(this.users.length > 0) this.getPacContainer().addClass("show")
-        else this.getPacContainer().removeClass("show")
+        
+        if(!sideNav.open) {
+            if(this.users.length > 0) this.getPacContainer().addClass("show")
+            else this.getPacContainer().removeClass("show")
+        }
     }
 
     cleanUsers() {
