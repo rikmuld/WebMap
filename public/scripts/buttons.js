@@ -219,7 +219,6 @@ class SearchBar extends SimpleControl {
             Sockets.findUsers(input.value, 10);
     }
     updateUsers(users) {
-        console.log("hello");
         this.cleanUsers();
         this.users = users;
         this.users.forEach(user => {

@@ -267,7 +267,6 @@ class SearchBar extends SimpleControl {
     }
 
     updateUsers(users: Tables.User[]) {
-        console.log("hello")
         this.cleanUsers()
         this.users = users
         this.users.forEach(user => {
