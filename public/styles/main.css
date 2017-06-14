@@ -192,6 +192,7 @@ animation slide-in-bottom 0.3s cubic-bezier(0.645,
   line-height: 48px;
   cursor: pointer;
   box-shadow: rgba(0,0,0,0.3) 0px 1px 4px -1px;
+border-radius
 }
 .TopNav {
   display: inline-block;
