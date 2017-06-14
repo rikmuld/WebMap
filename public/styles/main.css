@@ -235,6 +235,7 @@ input:focus {
   font-size: 15pt;
   line-height: 1;
   border-color: #ddd;
+  border-radius: 0px;
 }
 .text {
   display: block;
