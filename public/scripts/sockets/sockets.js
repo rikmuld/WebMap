@@ -22,13 +22,14 @@ var Sockets;
     }
     Sockets.usersGot = usersGot;
     function manageSubscription(to, subsciption) {
-        const index = Subscriptions.subIndex(to);
+        const index = Subscriptions.subIndex(to._id);
         if (subsciption && index == -1) {
-            SocketHandler.socket.emit(SocketIDs.SUBSCRIBE_MANAGE, to, subsciption);
+            SocketHandler.socket.emit(SocketIDs.SUBSCRIBE_MANAGE, to._id, subsciption);
+            Subscriptions.preSetup(to);
         }
         else if (!subsciption && index >= 0) {
-            SocketHandler.socket.emit(SocketIDs.SUBSCRIBE_MANAGE, to, subsciption);
-            Subscriptions.remove(to);
+            SocketHandler.socket.emit(SocketIDs.SUBSCRIBE_MANAGE, to._id, subsciption);
+            Subscriptions.remove(to._id);
         }
     }
     Sockets.manageSubscription = manageSubscription;

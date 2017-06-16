@@ -5,14 +5,29 @@ namespace Subscriptions {
      }
 
     export const subscriptions: SubData[] = []
+    export const temp:string[] = []
 
     export function setupSubscriptions(subs: Tables.UserPopulated[]) {
         subs.forEach(sub => {
-            subscriptions.push({
+            const tempId = temp.indexOf(sub._id)
+            const subId = tempId >= 0? subscriptions.findIndex(s => s.user._id == sub._id) : subscriptions.length
+
+            const fulluser = {
                 user: sub,
-                icon: new SubscriptionIcon(webMap, sub, subscriptions.length)
-            })
+                icon: new SubscriptionIcon(webMap, sub, subId)
+            }
+
+            if(tempId >= 0) {
+                subscriptions[subId].icon.remove()
+                subscriptions[subId] = fulluser
+                temp.splice(tempId, 1)
+            } else subscriptions.push(fulluser)
         })
+    }
+
+    export function preSetup(sub: Tables.User) {
+        setupSubscriptions([Tables.populate(sub)])
+        temp.push(sub._id)
     }
 
     export function addLocation(sub: string, latlgn: google.maps.LatLng) {

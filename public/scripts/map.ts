@@ -63,9 +63,9 @@ function initMap() {
     webMap = new google.maps.Map(document.getElementById(MAP), {
         center: TOKYO,
         zoom: 14,
-        zoomControl: true,
+        zoomControl: !isMobile(),
         zoomControlOptions: {
-            position: google.maps.ControlPosition.BOTTOM_CENTER
+            position: google.maps.ControlPosition.LEFT_TOP
         },
         styles: STYLE,
         panControl: true,
@@ -105,7 +105,7 @@ function createMarker(latlng: google.maps.LatLng, color: number): google.maps.Ma
             fillColor: colorRGB(color),
             fillOpacity: 1,
             strokeWeight: 1,
-            scale: 1.3,
+            scale: 1,
             anchor: new google.maps.Point(11.4, 33),
         }
     })
@@ -130,6 +130,8 @@ function getPosition(callback: (pos: Position) => void, error?: () => void) {
 }
 
 function colorRGB(color: number): string { 
+    if(color >= colors.length) color = colors.length - 1
+
     if(color > -1) return "rgb(" + colors[color][0] + "," + colors[color][1] + "," + colors[color][2] + ")"
     else return "rgb(" + nocolor[0] + "," + nocolor[1] + "," + nocolor[2] + ")"
 }

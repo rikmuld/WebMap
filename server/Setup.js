@@ -78,7 +78,11 @@ var Setup;
                 tableHelper_1.TableHelper.createOrReturn(tables_1.Tables.User, findUser, newUser).then(user => done(null, user), err => done(err, null));
             });
         };
-        passport.serializeUser((user, done) => done(null, user.id));
+        passport.serializeUser((user, done) => {
+            user.subscriptions = [];
+            user.save();
+            done(null, user.id);
+        });
         passport.deserializeUser((userId, done) => {
             const query = tables_1.Tables.User.findOne({ id: userId }).select("-locations");
             query.exec().then(user => done(null, user), err => done(err, null));

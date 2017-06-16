@@ -44,14 +44,25 @@ class AddLocation extends SimpleControl {
     }
     desctopClick() {
         this.active = !this.active;
-        if (this.active) {
-            this.el.classList.add("active");
-            this.childs.forEach(child => child.el.classList.add("active"));
-        }
+        const instance = this;
+        if (this.active)
+            this.addClass("active");
         else {
+            this.addClass("closing");
             this.el.classList.remove("active");
-            this.childs.forEach(child => child.el.classList.remove("active"));
+            setTimeout(() => {
+                instance.removeClass("closing");
+                instance.removeClass("active");
+            }, 300);
         }
+    }
+    addClass(cls) {
+        this.childs.forEach(child => child.el.classList.add(cls));
+        this.el.classList.add(cls);
+    }
+    removeClass(cls) {
+        this.childs.forEach(child => child.el.classList.remove(cls));
+        this.el.classList.remove(cls);
     }
     addLocation(pos) {
         Subscriptions.addLocation(user._id, pos);
@@ -272,7 +283,7 @@ class SearchBar extends SimpleControl {
             this.updateUsers([]);
             //set subscription user to state active
             //however for now:
-            Sockets.manageSubscription(user._id, true);
+            Sockets.manageSubscription(user, true);
         });
         el.appendChild(icon);
         el.appendChild(name);
@@ -307,15 +318,15 @@ class SearchBar extends SimpleControl {
         $(subbtn).click(() => {
             const sub2 = Subscriptions.subIndex(user._id) > -1;
             if (sub2) {
-                Sockets.manageSubscription(user._id, false);
+                Sockets.manageSubscription(user, false);
                 subbtn.classList.remove("active");
             }
             else {
-                Sockets.manageSubscription(user._id, true);
+                Sockets.manageSubscription(user, true);
                 subbtn.classList.add("active");
             }
             subtext.innerText = this.getSubscribeText(sub2);
-            //this.updateUsers(this.getUsers())
+            this.updateUsers(this.getUsers());
         });
         const fullUser = Subscriptions.get(user._id);
         $(img).click(() => {

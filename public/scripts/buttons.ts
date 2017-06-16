@@ -58,15 +58,27 @@ class AddLocation extends SimpleControl {
 
     private desctopClick() {
         this.active = !this.active
-        
-        if(this.active) {
-            this.el.classList.add("active") 
-            this.childs.forEach(child => child.el.classList.add("active"))
-        }
+        const instance = this
+
+        if(this.active) this.addClass("active")
         else {
-            this.el.classList.remove("active") 
-            this.childs.forEach(child => child.el.classList.remove("active"))
+            this.addClass("closing")
+            this.el.classList.remove("active")
+            setTimeout(() => {
+                instance.removeClass("closing")
+                instance.removeClass("active")
+            }, 300)
         } 
+    }
+
+    private addClass(cls: string) {
+        this.childs.forEach(child => child.el.classList.add(cls))
+        this.el.classList.add(cls)
+    }
+
+    private removeClass(cls: string) {
+        this.childs.forEach(child => child.el.classList.remove(cls))
+        this.el.classList.remove(cls)
     }
 
     private addLocation(pos: google.maps.LatLng){
@@ -335,7 +347,7 @@ class SearchBar extends SimpleControl {
 
             //set subscription user to state active
             //however for now:
-            Sockets.manageSubscription(user._id, true)
+            Sockets.manageSubscription(user, true)
         })
 
         el.appendChild(icon)
@@ -381,14 +393,14 @@ class SearchBar extends SimpleControl {
         $(subbtn).click(() => {
             const sub2 = Subscriptions.subIndex(user._id) > -1
             if(sub2) {
-                Sockets.manageSubscription(user._id, false)
+                Sockets.manageSubscription(user, false)
                 subbtn.classList.remove("active")
             } else {
-                Sockets.manageSubscription(user._id, true)
+                Sockets.manageSubscription(user, true)
                 subbtn.classList.add("active")                
             }
             subtext.innerText = this.getSubscribeText(sub2)
-            //this.updateUsers(this.getUsers())
+            this.updateUsers(this.getUsers())
         })
 
         const fullUser = Subscriptions.get(user._id)

@@ -20,14 +20,15 @@ namespace Sockets {
         serachbar.updateUsers(users)
     }
     
-    export function manageSubscription(to: string, subsciption: boolean) {
-        const index = Subscriptions.subIndex(to)
+    export function manageSubscription(to: Tables.User, subsciption: boolean) {
+        const index = Subscriptions.subIndex(to._id)
 
         if(subsciption && index == -1) {
-            SocketHandler.socket.emit(SocketIDs.SUBSCRIBE_MANAGE, to, subsciption)  
+            SocketHandler.socket.emit(SocketIDs.SUBSCRIBE_MANAGE, to._id, subsciption)  
+            Subscriptions.preSetup(to)
         } else if(!subsciption && index >= 0) {
-            SocketHandler.socket.emit(SocketIDs.SUBSCRIBE_MANAGE, to, subsciption)  
-            Subscriptions.remove(to)
+            SocketHandler.socket.emit(SocketIDs.SUBSCRIBE_MANAGE, to._id, subsciption)  
+            Subscriptions.remove(to._id)
         }
     }
 }

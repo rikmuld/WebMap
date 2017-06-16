@@ -21,4 +21,11 @@ namespace Tables {
         subscriptions: UserGeneric[]
         locations: Location[]
     }
+
+    export function populate(user: User): UserPopulated { 
+        const poped = user as any as UserPopulated
+        poped.subscriptions = []
+        poped.locations = []
+        return poped
+    }
 }

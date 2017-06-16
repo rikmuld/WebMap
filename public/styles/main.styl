@@ -78,8 +78,8 @@ addIconSize = 59px
     background-image url('/icons/plus.png')
     border-radius 50%
     cursor pointer
-    z-index 100
-    
+    float left
+
 #addIcon.active
     background-image url('/icons/plusActive.png')
 
@@ -92,14 +92,15 @@ addIconSize = 59px
     background-image url('/icons/atCurrent.png')
     border-radius 50%
     cursor pointer
-    display none
-    z-index -1
-    
+    transform: translateY(60px)
+    float left
+    opacity 0
 
 #atCurrent.active
-    display block
-    -webkit-animation slide-in-bottom 0.3s cubic-bezier(0.645, 0.045, 0.355, 1.000) both
-	animation slide-in-bottom 0.3s cubic-bezier(0.645, 0.045, 0.355, 1.000) both
+ 	animation slideup 0.3s cubic-bezier(0.075, 0.82, 0.165, 1) both
+
+#atCurrent.closing
+ 	animation slidedown 0.3s cubic-bezier(0.075, 0.82, 0.165, 1) both
 
 .pac-container.show
     display block !important
@@ -115,8 +116,6 @@ addIconSize = 59px
 #userLogout
     margin-right 10px
     margin-top 10px
-
-
 
 .subscription
     margin-left 10px
@@ -159,15 +158,15 @@ addIconSize = 59px
     border-radius 50%
 
 .subscriptions
-    height 100% /* 100% Full-height */
-    width 0 /* 0 width - change this with JavaScript */
-    position fixed /* Stay in place */
-    z-index -1 /* Stay on top */
+    height 100%
+    width 0
+    position fixed
+    z-index -1
     top 0
     left 0
-    background-color white /* Black*/
-    overflow-x hidden /* Disable horizontal scroll */
-    transition 0.5s /* 0.5 second transition effect to slide in the sidenav */
+    background-color white
+    overflow-x hidden
+    transition 0.5s
     display inline-block
     margin-left 0px
 
@@ -248,7 +247,6 @@ input:focus
     .user
         float left
     
-
 #Name
     font-size 14px
     line-height 2
@@ -318,10 +316,19 @@ input:focus
     font-size 16px
     line-height 30px
 
-@keyframes slide-in-bottom
-  0%
-    transform: translateY(1000px)
-    opacity: 0
-  100% 
-    transform: translateY(0)
-    opacity: 1
+@keyframes slideup
+    0%
+        transform: translateY(60px)
+        opacity 0
+    100% 
+        transform: translateY(0px)
+        opacity 1
+
+@keyframes slidedown
+    0%
+        transform: translateY(0px)
+        opacity 1
+    60%
+        opacity 0
+    100% 
+        transform: translateY(60px)
