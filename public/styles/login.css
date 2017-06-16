@@ -6,7 +6,7 @@ html {
   background: url("/icons/map.jpg");
   background-size: cover;
   background-position: 50%;
-  filter: brightness(0.4) contrast(130%);
+  filter: brightness(0.45) contrast(170%);
 }
 #logo {
   animation: fade 0.5s cubic-bezier(0.39, 0.575, 0.565, 1) 0.7s both;
