@@ -63,13 +63,13 @@ function initMap() {
     webMap = new google.maps.Map(document.getElementById(MAP), {
         center: TOKYO,
         zoom: 14,
-        zoomControl: true,
+        zoomControl: !isMobile(),
         zoomControlOptions: {
-            position: google.maps.ControlPosition.BOTTOM_CENTER
+            position: google.maps.ControlPosition.LEFT_TOP
         },
         styles: STYLE,
         panControl: true,
-        streetViewControl: true,
+        streetViewControl: false,
         streetViewControlOptions: {
             position: google.maps.ControlPosition.BOTTOM_CENTER
         },
@@ -78,7 +78,7 @@ function initMap() {
     })
 
     sideNav = new SideNav(webMap, google.maps.ControlPosition.TOP_LEFT)
-    locationControl = new LocationControl(webMap, google.maps.ControlPosition.BOTTOM_CENTER, LOCATION_BOX)
+    locationControl = new LocationControl(webMap, google.maps.ControlPosition.LEFT_TOP, LOCATION_BOX)
     serachbar = new SearchBar(webMap, google.maps.ControlPosition.TOP_LEFT, SEARCH_BOX)
     addLocation = new AddLocation(webMap, google.maps.ControlPosition.RIGHT_BOTTOM, ADD_ICON)
 
