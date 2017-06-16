@@ -315,7 +315,7 @@ class SearchBar extends SimpleControl {
                 subbtn.classList.add("active");
             }
             subtext.innerText = this.getSubscribeText(sub2);
-            this.updateUsers(this.getUsers());
+            //this.updateUsers(this.getUsers())
         });
         const fullUser = Subscriptions.get(user._id);
         $(img).click(() => {
