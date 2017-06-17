@@ -158,26 +158,15 @@ class Logout extends SimpleControl {
 
 class SubscriptionIcon extends SimpleControl {
     user: Tables.UserPopulated
-    markers: google.maps.Marker[]
+    markers: google.maps.Marker[] = []
     hidden: boolean = false
     color: number
 
     constructor(map: google.maps.Map, user: Tables.UserPopulated, color: number) {
         super(map, google.maps.ControlPosition.LEFT_BOTTOM, user._id)
-
         this.user = user
-        this.color = color
 
-        const fade = document.createElement('div')
-        fade.classList.add("hider")
-
-        this.el.appendChild(generateUserImg(user, color))
-        this.el.appendChild(fade)
-        this.el.classList.add("user")
-        this.el.classList.add("subscription")
-
-        this.markers = createMarkers(user.locations, color)
-        this.show()
+        this.refresh(color)
     }
 
     show() {
@@ -195,6 +184,9 @@ class SubscriptionIcon extends SimpleControl {
     remove() {
         this.hide()
         this.el.remove()
+
+        const index = this.map.controls[google.maps.ControlPosition.LEFT_BOTTOM].getArray().findIndex(s => (s as HTMLDivElement).id == this.user._id)
+        this.map.controls[google.maps.ControlPosition.LEFT_BOTTOM].removeAt(index)
     }
 
     addLocation(latlng: google.maps.LatLng) {
@@ -207,6 +199,26 @@ class SubscriptionIcon extends SimpleControl {
     click() {
         if(this.hidden) this.show()
         else this.hide()
+    }
+    
+    generateIcon() {
+        const fade = document.createElement('div')
+        fade.classList.add("hider")
+
+        this.el.appendChild(generateUserImg(this.user, this.color))
+        this.el.appendChild(fade)
+        this.el.classList.add("user")
+        this.el.classList.add("subscription")
+    }
+
+    refresh(color: number) {
+        this.color = color
+        this.el.innerHTML = ""
+        this.markers.forEach(m => m.setMap(null))
+        
+        this.generateIcon()
+        this.markers = createMarkers(this.user.locations, color)
+        this.show()
     }
 }
 
@@ -282,7 +294,9 @@ class SearchBar extends SimpleControl {
 
     findUsers(input: HTMLInputElement, subscriptions: boolean) {
         if(input.value.length == 0) this.updateUsers([])
-        else if(subscriptions) Sockets.findUsers(input.value, 3) //change to only search in subscriptions
+        else if(subscriptions) {
+            //Sockets.findUsers(input.value, 3) //change to only search in subscriptions
+        }
         else Sockets.findUsers(input.value, 10)
     }
 

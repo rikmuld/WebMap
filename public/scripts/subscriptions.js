@@ -51,6 +51,9 @@ var Subscriptions;
         const index = subIndex(usr);
         Subscriptions.subscriptions[index].icon.remove();
         Subscriptions.subscriptions.splice(index, 1);
+        for (let i = 1; i < this.subscriptions.length; i++) {
+            Subscriptions.subscriptions[i].icon.refresh(i);
+        }
     }
     Subscriptions.remove = remove;
 })(Subscriptions || (Subscriptions = {}));

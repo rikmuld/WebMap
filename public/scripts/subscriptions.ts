@@ -56,5 +56,9 @@ namespace Subscriptions {
         const index = subIndex(usr)
         subscriptions[index].icon.remove()
         subscriptions.splice(index, 1)
+
+        for (let i = 1; i < this.subscriptions.length; i++) {
+            subscriptions[i].icon.refresh(i)
+        }
     }
 }

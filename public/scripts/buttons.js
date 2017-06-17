@@ -128,17 +128,10 @@ class Logout extends SimpleControl {
 class SubscriptionIcon extends SimpleControl {
     constructor(map, user, color) {
         super(map, google.maps.ControlPosition.LEFT_BOTTOM, user._id);
+        this.markers = [];
         this.hidden = false;
         this.user = user;
-        this.color = color;
-        const fade = document.createElement('div');
-        fade.classList.add("hider");
-        this.el.appendChild(generateUserImg(user, color));
-        this.el.appendChild(fade);
-        this.el.classList.add("user");
-        this.el.classList.add("subscription");
-        this.markers = createMarkers(user.locations, color);
-        this.show();
+        this.refresh(color);
     }
     show() {
         this.hidden = false;
@@ -153,6 +146,8 @@ class SubscriptionIcon extends SimpleControl {
     remove() {
         this.hide();
         this.el.remove();
+        const index = this.map.controls[google.maps.ControlPosition.LEFT_BOTTOM].getArray().findIndex(s => s.id == this.user._id);
+        this.map.controls[google.maps.ControlPosition.LEFT_BOTTOM].removeAt(index);
     }
     addLocation(latlng) {
         const marker = createMarker(latlng, this.color);
@@ -165,6 +160,22 @@ class SubscriptionIcon extends SimpleControl {
             this.show();
         else
             this.hide();
+    }
+    generateIcon() {
+        const fade = document.createElement('div');
+        fade.classList.add("hider");
+        this.el.appendChild(generateUserImg(this.user, this.color));
+        this.el.appendChild(fade);
+        this.el.classList.add("user");
+        this.el.classList.add("subscription");
+    }
+    refresh(color) {
+        this.color = color;
+        this.el.innerHTML = "";
+        this.markers.forEach(m => m.setMap(null));
+        this.generateIcon();
+        this.markers = createMarkers(this.user.locations, color);
+        this.show();
     }
 }
 class SearchBar extends SimpleControl {
@@ -226,8 +237,9 @@ class SearchBar extends SimpleControl {
     findUsers(input, subscriptions) {
         if (input.value.length == 0)
             this.updateUsers([]);
-        else if (subscriptions)
-            Sockets.findUsers(input.value, 3); //change to only search in subscriptions
+        else if (subscriptions) {
+            //Sockets.findUsers(input.value, 3) //change to only search in subscriptions
+        }
         else
             Sockets.findUsers(input.value, 10);
     }
