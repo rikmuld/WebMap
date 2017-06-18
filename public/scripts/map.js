@@ -44,6 +44,7 @@ const colors = [
     [155, 89, 182],
     [52, 73, 94]
 ];
+let markerIcons;
 let webMap;
 let locationControl;
 let serachbar;
@@ -73,7 +74,7 @@ function initMap() {
     locationControl = new LocationControl(webMap, google.maps.ControlPosition.LEFT_TOP, LOCATION_BOX);
     serachbar = new SearchBar(webMap, google.maps.ControlPosition.TOP_LEFT, SEARCH_BOX);
     addLocation = new AddLocation(webMap, google.maps.ControlPosition.RIGHT_BOTTOM, ADD_ICON);
-    //const logout = new Logout(webMap, google.maps.ControlPosition.RIGHT_TOP)
+    markerIcons = colors.map((c, i) => createMarkerIcon(i));
     locationControl.act();
     Sockets.getLocations();
 }
@@ -86,14 +87,7 @@ function mkLatLng(lat, lng) {
 function createMarker(latlng, color) {
     return new google.maps.Marker({
         position: latlng,
-        icon: {
-            path: marker,
-            fillColor: colorRGB(color),
-            fillOpacity: 1,
-            strokeWeight: 1,
-            scale: 1,
-            anchor: new google.maps.Point(11.4, 33),
-        }
+        icon: markerIcons[color]
     });
 }
 function createMarkers(locs, color) {
@@ -136,4 +130,14 @@ function generateUserImg(user, color = -1) {
         img.setAttribute("style", "background-color: " + colorRGB(color));
         return img;
     }
+}
+function createMarkerIcon(color) {
+    return {
+        path: marker,
+        fillColor: colorRGB(color),
+        fillOpacity: 1,
+        strokeWeight: 1,
+        scale: 1,
+        anchor: new google.maps.Point(11.4, 33),
+    };
 }

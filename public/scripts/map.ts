@@ -49,6 +49,7 @@ const colors = [
     [52, 73, 94]
 ]
 
+let markerIcons:google.maps.Icon[]
 let webMap: google.maps.Map
 let locationControl: LocationControl
 let serachbar: SearchBar
@@ -82,10 +83,9 @@ function initMap() {
     serachbar = new SearchBar(webMap, google.maps.ControlPosition.TOP_LEFT, SEARCH_BOX)
     addLocation = new AddLocation(webMap, google.maps.ControlPosition.RIGHT_BOTTOM, ADD_ICON)
 
-    //const logout = new Logout(webMap, google.maps.ControlPosition.RIGHT_TOP)
+    markerIcons = colors.map((c, i) => createMarkerIcon(i))
 
     locationControl.act()
-
     Sockets.getLocations()
 }
 
@@ -100,14 +100,7 @@ function mkLatLng(lat: number, lng: number): google.maps.LatLng {
 function createMarker(latlng: google.maps.LatLng, color: number): google.maps.Marker {
     return new google.maps.Marker({
         position: latlng,
-        icon: {
-            path: marker,
-            fillColor: colorRGB(color),
-            fillOpacity: 1,
-            strokeWeight: 1,
-            scale: 1,
-            anchor: new google.maps.Point(11.4, 33),
-        }
+        icon: markerIcons[color]
     })
 }
 
@@ -151,5 +144,16 @@ function generateUserImg(user: Tables.User | Tables.UserPopulated, color: number
         img.innerText = name[0][0] + name[name.length - 1][0]
         img.setAttribute("style", "background-color: " + colorRGB(color))
         return img
+    }
+}
+
+function createMarkerIcon(color: number) {
+    return {
+        path: marker,
+        fillColor: colorRGB(color),
+        fillOpacity: 1,
+        strokeWeight: 1,
+        scale: 1,
+        anchor: new google.maps.Point(11.4, 33),
     }
 }

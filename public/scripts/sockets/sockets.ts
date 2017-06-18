@@ -8,7 +8,6 @@ namespace Sockets {
     }
 
     export function locationsGot(fullUsers: Tables.UserPopulated[]) {
-        console.log(fullUsers)
         Subscriptions.setupSubscriptions(fullUsers)
     }
 

@@ -9,7 +9,6 @@ var Sockets;
     }
     Sockets.getLocations = getLocations;
     function locationsGot(fullUsers) {
-        console.log(fullUsers);
         Subscriptions.setupSubscriptions(fullUsers);
     }
     Sockets.locationsGot = locationsGot;

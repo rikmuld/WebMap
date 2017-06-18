@@ -241,7 +241,6 @@ input:focus {
 .text {
   display: block;
   margin-left: 10px;
-  width: 135px;
   float: left;
 }
 .person {

@@ -130,12 +130,22 @@ class SubscriptionIcon extends SimpleControl {
         super(map, google.maps.ControlPosition.LEFT_BOTTOM, user._id);
         this.markers = [];
         this.hidden = false;
+        this.animate = false;
         this.user = user;
         this.refresh(color);
     }
     show() {
         this.hidden = false;
-        this.markers.forEach(m => m.setMap(this.map));
+        if (this.animate) {
+            shuffle(this.markers).forEach((m, i) => setTimeout(() => {
+                m.setAnimation(google.maps.Animation.DROP);
+                m.setMap(this.map);
+            }, 50 * i)); //make sure that if remove not continue, but timeouts inside each other to improve
+            this.animate = false;
+        }
+        else {
+            this.markers.forEach(m => m.setMap(this.map));
+        }
         this.el.classList.remove("hidden");
     }
     hide() {
